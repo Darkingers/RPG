@@ -1,0 +1,10 @@
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.csprojAssemblyReference.cache
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.Properties.Resources.resources
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.csproj.GenerateResource.cache
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.csproj.CoreCompileInputs.cache
+C:\Users\Gabor\source\repos\RPG\RPG\bin\Debug\RPG.exe.config
+C:\Users\Gabor\source\repos\RPG\RPG\bin\Debug\RPG.exe
+C:\Users\Gabor\source\repos\RPG\RPG\bin\Debug\RPG.pdb
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.exe
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.pdb
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\RPG.Form1.resources
