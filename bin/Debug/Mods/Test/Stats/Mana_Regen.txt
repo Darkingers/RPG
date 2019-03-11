@@ -1,0 +1,10 @@
+[Stat_Regeneration]
+  [Stat]
+    [Type]
+      [Name] Mana_Regeneration
+      [Description] Regenerates your mana [END]
+      [Tags] Mana Regeneration [END]
+    [END]
+  [END]
+  [Regenerated] Test:Mana
+[END]

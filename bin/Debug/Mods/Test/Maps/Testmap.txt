@@ -1,0 +1,25 @@
+[Map]
+   [Type]
+      [Name] Testmap
+      [Description] This is a test map [END]
+      [Tags] Test Map [END] 
+   [END]
+   [Position] 4 4
+   [Replacer]
+      Test:Wall 0
+      Test:Grass 1
+      Test:Water 2
+      Test:Lava 3
+   [END]
+   [Tiles] 10 10
+0 0 0 0 0 0 0 0 0 0
+0 1 1 1 0 1 1 1 1 0
+0 2 1 3 0 1 1 1 1 0
+0 1 1 1 1 1 1 1 1 0
+0 0 0 0 1 1 1 1 1 0
+0 1 1 1 1 1 1 1 1 0
+0 1 1 1 1 1 1 1 1 0
+0 1 1 1 1 1 1 1 1 0
+0 1 1 1 1 1 1 1 1 0
+0 0 0 0 0 0 0 0 0 0
+[END]

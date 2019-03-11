@@ -1,0 +1,9 @@
+[Tile]
+  [Type]
+    [Name] Wall
+    [Description] This is wall [END]
+    [Tags] Wall [END] 
+  [END]
+  [Image] Test:Wall.png
+  [Travel_Modes] Fly [END]
+[END]

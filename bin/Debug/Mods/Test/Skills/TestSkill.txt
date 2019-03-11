@@ -1,0 +1,15 @@
+[Skill]
+  [Type]
+    [Name] TestSkill
+    [Description] A basic attack with the sword [END]
+    [Tags] Weapon Sword [END]
+  [END]
+  [Cost]
+     [Stat_Cost] [Stat] Test:Mana [Flat] 100 [Percent] 0 [END]
+  [END]
+  [Cooldown] [Time] 15 [Time_Left] 0 [END]
+  [Scripts]
+     Test:TestScript
+  [END]
+[END]
+    

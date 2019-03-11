@@ -1,0 +1,10 @@
+[Stat_Modifier]
+  [Stat]
+    [Type]
+      [Name] Armor
+      [Description] Reduces damage you take from physical attacks [END]
+      [Tags] Physical Damage_Recieved [END]
+    [END]
+  [END]
+  [Can_Change_Sign] false
+[END]
