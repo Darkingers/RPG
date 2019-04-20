@@ -1,9 +1,0 @@
-[Tile]
-  [Type]
-    [Name] Grass
-    [Description] This is grass [END]
-    [Tags] Grass [END] 
-  [END]
-  [Image] Test:Grass.png
-  [Travel_Modes] Walk Fly Phase [END]
-[END]

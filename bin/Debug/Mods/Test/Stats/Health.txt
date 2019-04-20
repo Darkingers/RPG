@@ -1,9 +1,0 @@
-[Stat_Resource]
-  [Stat]
-    [Type]
-      [Name] Health
-      [Description] If your health runs out,you die [END]
-      [Tags] Health [END]
-    [END]
-  [END]
-[END]

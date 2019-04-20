@@ -1,9 +1,0 @@
-C:\Users\Gabor\source\repos\RPG\RPG\bin\Release\RPG.exe.config
-C:\Users\Gabor\source\repos\RPG\RPG\bin\Release\RPG.exe
-C:\Users\Gabor\source\repos\RPG\RPG\bin\Release\RPG.pdb
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.Form1.resources
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.Properties.Resources.resources
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.csproj.GenerateResource.cache
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.csproj.CoreCompileInputs.cache
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.exe
-C:\Users\Gabor\source\repos\RPG\RPG\obj\Release\RPG.pdb

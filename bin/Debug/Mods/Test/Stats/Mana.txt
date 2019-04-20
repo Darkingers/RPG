@@ -1,9 +1,0 @@
-[Stat_Resource]
-  [Stat]
-    [Type]
-      [Name] Mana
-      [Description] Mana allows you to cast spells [END]
-      [Tags] Mana [END]
-    [END]
-  [END]
-[END]

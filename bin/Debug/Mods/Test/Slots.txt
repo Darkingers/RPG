@@ -1,9 +1,0 @@
-Helmet
-Shoulder
-Chest
-Leg
-Boot
-Glove
-Left_Hand
-Right_Hand
-Cape

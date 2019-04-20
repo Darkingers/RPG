@@ -1,9 +1,0 @@
-[Tile]
-  [Type]
-    [Name] Lava
-    [Description] This is hot boiling metal [END]
-    [Tags] Lava Fatal [END] 
-  [END]
-  [Image] Test:Lava.png
-  [Travel_Modes] Fly [END]
-[END]

@@ -1,9 +1,0 @@
-[Tile]
-  [Type]
-    [Name] Water
-    [Description] This is water [END]
-    [Tags] Water [END] 
-  [END]
-  [Image] Test:Water.png
-  [Travel_Modes] Phase [END]
-[END]
