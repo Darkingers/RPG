@@ -1,0 +1,6 @@
+Object Slot{
+	String Name="Left_Hand";
+}
+Object Slot{
+	String Name="Right_Hand";
+}

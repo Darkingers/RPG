@@ -1,0 +1,20 @@
+Object Stat_Resource{
+      Reference<Mod> Source=Base:Base;
+      String Name="Health";
+      String Description=" If your health runs out,you die";
+      Array<Reference<Tag>> Tags={Base:Resource ,Base:Fatal};
+      Double Flat=100.0;
+      Double Percent=0.0;
+      Double Current=100.0;
+}
+Object Stat_Regeneration{
+      Reference<Mod> Source=Base:Base;
+      String Name= "Health Regeneration";
+      String Description= "Regenerates your health";
+      Array<Reference<Tag>> Tags={
+		Base:Regeneration
+		n;
+      Reference<Stat_Resource> Target=Base:Health;
+      Double Flat=0.0;
+      Double Percent=1.0;
+}

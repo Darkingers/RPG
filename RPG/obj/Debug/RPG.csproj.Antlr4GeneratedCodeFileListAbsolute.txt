@@ -1,0 +1,6 @@
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarLexer.cs
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarParser.cs
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarListener.cs
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarBaseListener.cs
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarVisitor.cs
+C:\Users\Gabor\source\repos\RPG\RPG\obj\Debug\GrammarBaseVisitor.cs

@@ -1,0 +1,20 @@
+Object Stat_Resource{
+      Reference<Mod> Source="Base:Base;
+      String Name="Mana";
+      String Description="Mana allows you to cast spells";
+      Array<Reference<Tag>> Tags=Base:Resource
+      Double Flat=100.0;
+      Double Percent=0.0;
+      Double Currenct=100.0;
+}
+Object Stat_Regeneration{
+      Reference<Mod> Source=Base:Base;
+      String Name="Mana Regeneration"
+      String Description="Regenerates your mana";
+      Array<Reference<Tag>> Tags={ 
+		Base:Regeneration
+		};
+      Reference<Stat_Resource> Target=Base:Mana;
+      Double Flat=0.0;
+      Double Percent=1.0;
+}

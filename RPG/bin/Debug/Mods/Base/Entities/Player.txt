@@ -1,0 +1,45 @@
+Object Player{
+	Reference<Mod> Source = Base:Base;
+	String Name="Player";
+	String Description="Player champ";
+	Array<Reference<Tag>> Tags={Base:Player,Base:Entity};
+	Reference<Image> Image=Base:Player.png;
+	Array<Item> Inventory={Base:Shield};
+	Dictionary<Reference<Slot>,Item> Equipment={Base:Left_Hand@Base:Shield}
+    
+	Int Sight = 2;
+	Int Speed = 2;
+
+	Array<Stat_Resource> Resources=
+	{
+		Copy Type=Base:Health;
+		Double Flat=500.0; 	
+		Double Percent=100.0; 
+		Double Current=1000.0;
+		,
+		Copy Type=Base:Mana; 
+		Double Flat=500.0;
+		Double Percent=100.0;
+ 		Double Current=1000.0;
+	};
+	Array<Stat_Modifier>:Modifiers
+   	{
+		Copy Type =Base:Physical Damage;
+		Double Flat=50; 
+		Double Percent=25;
+		,
+		Copy Type=Base:Armor;
+		Double Flat=20;
+		Double Percent=20;
+    	};
+    	Array<Stat_Regeneration>:Regenerators
+    	{
+		Copy Type=Base:Health Regeneration; 
+		Double Flat=10;
+		Double Percent=5;
+		,
+		Copy Type=Base:Mana Regeneration; 
+		Double Flat=100;
+		Double Percent=20;
+	};
+}
