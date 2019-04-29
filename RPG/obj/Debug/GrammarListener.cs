@@ -32,26 +32,26 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IGrammarListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// Enter a parse tree produced by <see cref="GrammarParser.file"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterScript([NotNull] GrammarParser.ScriptContext context);
+	void EnterFile([NotNull] GrammarParser.FileContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// Exit a parse tree produced by <see cref="GrammarParser.file"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitScript([NotNull] GrammarParser.ScriptContext context);
+	void ExitFile([NotNull] GrammarParser.FileContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// Enter a parse tree produced by <see cref="GrammarParser.object"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterStatementList([NotNull] GrammarParser.StatementListContext context);
+	void EnterObject([NotNull] GrammarParser.ObjectContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// Exit a parse tree produced by <see cref="GrammarParser.object"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitStatementList([NotNull] GrammarParser.StatementListContext context);
+	void ExitObject([NotNull] GrammarParser.ObjectContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.block"/>.
@@ -63,6 +63,17 @@ public interface IGrammarListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBlock([NotNull] GrammarParser.BlockContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatementList([NotNull] GrammarParser.StatementListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatementList([NotNull] GrammarParser.StatementListContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.statement"/>.
@@ -195,6 +206,39 @@ public interface IGrammarListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionName([NotNull] GrammarParser.FunctionNameContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.dictionary"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDictionary([NotNull] GrammarParser.DictionaryContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.dictionary"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDictionary([NotNull] GrammarParser.DictionaryContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.grid"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGrid([NotNull] GrammarParser.GridContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.grid"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGrid([NotNull] GrammarParser.GridContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.array"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArray([NotNull] GrammarParser.ArrayContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.array"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArray([NotNull] GrammarParser.ArrayContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.arguments"/>.

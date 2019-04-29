@@ -19,15 +19,15 @@ namespace RPG
         protected Modifier Intention;
         protected Cooldown Duration;
 
-        External_Effect()
+        public External_Effect()
         {
             Copy(0, 0, null, new List<Tag>(), new List<Tag>(), Number.Current, Modifier.Decrease,new Cooldown(null,0,0,null));
         }
-        External_Effect(ScriptObject scriptobject,double flat,double percent,Stat target,List<Tag> sender,List<Tag> reciever,Number target_number,Modifier intention,Cooldown duration) : base(scriptobject)
+        public External_Effect(ScriptObject scriptobject,double flat,double percent,Stat target,List<Tag> sender,List<Tag> reciever,Number target_number,Modifier intention,Cooldown duration) : base(scriptobject)
         {
             Copy(flat, percent, target, sender, reciever, target_number, intention, duration);
         }
-        External_Effect(External_Effect cloned)
+        public External_Effect(External_Effect cloned)
         {
             Copy(cloned);
         }
@@ -55,7 +55,7 @@ namespace RPG
             Set_Intention(intention)&&
             Set_Duration(duration);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new External_Effect(this);
         }
@@ -195,19 +195,9 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-                base.ToString(tab) +
-                tab + MyParser.Write(Flat, "Double", "Flat") +
-                tab + MyParser.Write(Percent, "Double", "Percent") +
-                tab + MyParser.Write(Target, "Stat", "Target") +
-                tab + MyParser.Write(Sender_Tags, "Array<Tag>", "Sender_Tags") +
-                tab + MyParser.Write(Reciever_Tags, "Array<Tag>", "Reciever_Tags") +
-                tab + MyParser.Write(Target_Number, "Number", "Target_Number") +
-                tab + MyParser.Write(Intention, "Modifier", "Intention") +
-                tab + MyParser.Write(Duration, "Cooldown", "Duration");
-            return returned;
+            return "TODO";
         }
         public override bool Set_Variable(string name, object value)
         {

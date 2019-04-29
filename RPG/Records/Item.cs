@@ -39,9 +39,13 @@ namespace RPG
             Set_Skills(skills)&&
             Set_Stats(stats);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Item(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Item)copied);
         }
 
         public bool Apply(Stat modified)
@@ -132,17 +136,6 @@ namespace RPG
             return Stats;
         }
 
-        public override string ToString(string tab)
-        {
-            string temp =
-                tab + base.ToString() +
-                tab + MyParser.Write(Worth, "Double", "Worth") +
-                tab + MyParser.Write(Rarity, "Double", "Rarity") +
-                tab + MyParser.Write(Slot, "Slot", "Slot") +
-                tab + MyParser.Write(Skills, "Array<List>", "Skills") +
-                tab + MyParser.Write(Stats, "Array<Skill>", "Stats");
-            return temp;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)

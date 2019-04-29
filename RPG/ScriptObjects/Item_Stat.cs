@@ -35,7 +35,7 @@ namespace RPG
             Set_Flat(flat)&&
             Set_Percent(percent);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Item_Stat(this);
         }
@@ -104,14 +104,9 @@ namespace RPG
             return Target;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-                base.ToString(tab) +
-                tab + MyParser.Write(Flat, "Double", "Flat") +
-                tab + MyParser.Write(Percent, "Double", "Percent") +
-                tab + MyParser.Write(Target, "Stat", "Target");
-            return returned;
+            return Target.Get_Identifier() + "/" + Flat + "," + Percent;
         }
         public override bool Set_Variable(string name, object value)
         {

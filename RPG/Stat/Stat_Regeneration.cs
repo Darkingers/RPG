@@ -12,6 +12,7 @@ namespace RPG
     {
         protected Stat_Resource Target;//Reference
         protected Semaphore Lock;//Contains
+        protected double Elapsed = 0;//TODO
 
         public Stat_Regeneration()
         {
@@ -37,9 +38,13 @@ namespace RPG
             return 
             Set_Target(target);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Stat_Regeneration(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Stat_Regeneration)copied);
         }
 
         public bool Bind(List<Stat_Resource> resources)
@@ -61,7 +66,12 @@ namespace RPG
             Lock.WaitOne();
             double curr=Target.Get_Current();
             double inter = (GameTimer.Updater.Interval / 1000);
-            Target.Modify_Current( Flat+Target.Get_Max()*(double)(Percent/100));
+            Elapsed += GameTimer.Get_Interval();
+            if (Elapsed >= 1)
+            {
+                Elapsed = 0;
+                Target.Modify_Current((Flat + Target.Get_Max() * (double)(Percent / 100)));
+            }
             Lock.Release();
         }
 
@@ -76,13 +86,6 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string temp =
-                tab+base.ToString(tab) +
-                tab+MyParser.Write(Target, "Stat_Resource", "Target");
-            return temp;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)

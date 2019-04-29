@@ -20,16 +20,7 @@ namespace RPG
             switch (typename)
             {
                 case "String":
-                    returned = value;
-                    break;
-                case "Double":
-                    returned = double.Parse(value);
-                    break;
-                case "Int":
-                    returned = int.Parse(value);
-                    break;
-                case "Bool":
-                    returned = bool.Parse(value);
+                    returned = (string)value;
                     break;
                 case "Record":
                     returned = new Record();
@@ -130,7 +121,7 @@ namespace RPG
                     ((Cooldown)returned).Read(value);
                     break;
                 case "Copy":
-                    returned = Database.Get(value).Clone();
+                    returned = ((ScriptObject)Database.Get(value)).Clone();
                     break;
                 case "Point":
                     temporary = value.Split(',');
@@ -188,92 +179,13 @@ namespace RPG
                     }
                     break;
                 case "Reference":
-                    if (template == "Image")
-                    {
-                        returned = Database.Get_Image(value);
-                    }
-                    else
-                    {
                         returned = Database.Get(value);
-                    }
                     break;
                 default: throw new Exception("Not implemented type conversion: " + type);
             }
             return returned;
         }
-        static public List<string[]> Parse_Text(string text)
-        {
-            
-            List<string[]> returned = new List<string[]>();
-            string Parsemode = "";
-            string header = "";
-            string value = "";
-            int stage = 0;
-            int brackets = 0;
-            for(int i = 0; i < text.Length; i++)
-            {
-                if ((text[i] == ' ' || text[i] == '\n' || text[i] == '\r' || text[i] == '\t') && stage == 0)
-                {
-                    continue;
-                }
-                else if ((text[i] == ' ' || text[i] == '\n' || text[i] == '\r' || text[i] == '\t') && stage == 1)
-                {
-                    stage = 2;
-                }
-                else if (stage == 1 || stage == 0)
-                {
-                    stage = 1;
-                    Parsemode += text[i];
-                }
-                else if (stage == 2)
-                {
-                    if(text[i]=='{')
-                    {
-                        brackets++;
-                        stage = 3;
-                    }
-                    else
-                    {
-                        header += text[i];
-                    }
-                }
-                else if (stage == 3)
-                {
-                    if (text[i] == '{')
-                    {
-                        brackets++;
-                        value += text[i];
-                    }
-                    else if (text[i]=='}'){
-                        brackets--;
-                        if (brackets == 0)
-                        {
-                            returned.Add(Parse(Parsemode, header, value ));
-                            Parsemode = "";
-                            header = "";
-                            value = "";
-                            stage = 0;
-                        }
-                        else
-                        {
-                            value += text[i];
-                        }
-                    }
-                    else
-                    {
-                        value += text[i];
-                    }
-                }
-
-            }
-            return returned;
-        }
-        static public string[] Parse(string parsemode,string header,string value )
-        {
-            List<string> ret = new List<string> { parsemode, value };
-            ret.AddRange(header.Split(' '));
-            return ret.ToArray();
-        }
+       
         static public string[] Parse_Typename(string type)
         {
             string template = "";
@@ -323,54 +235,6 @@ namespace RPG
             return returned;
         }
 
-        static public string[] Parse_Attribute(string text)
-        {
-            string[] returned = new string[3];
-           
-            int brackets = 0;
-            int stage = 0;///0=Typename 1=Variablename 2=Value
-            foreach (char c in text)
-            {
-                if (stage == 0)
-                {
-                    if (c == ':')
-                    {
-                        stage = 1;
-                        continue;
-                    }
-                }
-                else if (stage == 1)
-                {
-                    if (c == '{')
-                    {
-                        stage = 2;
-                        brackets++;
-                        continue;
-                    }
-
-                }
-                else
-                {
-                    if (c == '{')
-                    {
-                        brackets++;
-                        continue;
-                    }
-                    else if (c == '}')
-                    {
-                        brackets--;
-
-                        if (brackets == 0)
-                        {
-                            return returned;
-                        }
-                        continue;
-                    }
-                }
-                returned[stage] += c;
-            }
-            throw new Exception("Error:Bracket count invalid");
-        }
         static public string[] Parse_Array(string text)
         {
             return text.Split(new string[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
@@ -422,7 +286,21 @@ namespace RPG
             }
             return returned;
         }
-
+        static public List<List<T>> Convert_Grid<T>(object converted)
+        {
+            List<object> temp = (List<object>)converted;
+            List<List<T>> returned = new List<List<T>>();
+            for(int i = 0; i < temp.Count; i++)
+            {
+                returned.Add(new List<T>());
+                List<object> rowtemp = (List<object>)temp[i];
+                for(int j = 0; j < rowtemp.Count; j++)
+                {
+                    returned[i].Add((T)rowtemp[j]);
+                }
+            }
+            return returned;
+        }
 
         static public string[] Create_Tokens(string text)
         {

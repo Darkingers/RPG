@@ -17,19 +17,15 @@ namespace RPG
         {
 
         }
-
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Slot(this);
         }
-
-        public override string ToString(string tab)
+        public override bool Assign(Record copied)
         {
-            string returned =
-                 base.ToString(tab);
-                 
-            return returned;
+            return Copy((Slot)copied);
         }
+
         public override bool Set_Variable(string name, object value)
         {
             switch (name)

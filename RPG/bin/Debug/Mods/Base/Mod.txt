@@ -1,17 +1,15 @@
-Object Mod{
+Mod{
 	String Name="Base";
-	String Description="Base Game"
-	Array<Tag> Tags={};
+	String Description="Base Game";
 	Array<String> Load_Order={
-		Images,
-		Tags,
-		Slots,
-		Tiles,
-		Stats,
-		Scripts,
-		Skills,
-		Items,
-		Maps,
-		Entities
+		"Images",
+		"Tags",
+		"Slots",
+		"Tiles",
+		"Stats",
+		"Skills",
+		"Items",
+		"Maps",
+		"Entities"
 	};
 }

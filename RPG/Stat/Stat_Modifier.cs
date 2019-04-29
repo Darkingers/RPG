@@ -31,9 +31,13 @@ namespace RPG
             return 
             Set_Intention(intention);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Stat_Modifier(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Stat_Modifier)copied);
         }
 
         public bool Send(External_Effect effect)
@@ -76,13 +80,6 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string temp =
-                tab+base.ToString(tab) +
-                tab+MyParser.Write(Intention, "Modifier", "Intention");
-            return temp;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)

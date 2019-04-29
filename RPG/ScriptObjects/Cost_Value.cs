@@ -35,7 +35,7 @@ namespace RPG
             Set_Flat_Cost(flat_cost)&&
             Set_Percent_Cost(percent_cost);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Cost_Value(this);
         }
@@ -115,14 +115,9 @@ namespace RPG
             else return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-                base.ToString(tab)+
-                tab+MyParser.Write(Target, "Stat", "Stat") +
-                tab+MyParser.Write(Flat_Cost, "Double", "Flat_Cost") +
-                tab+MyParser.Write(Percent_Cost, "Double", "Percent_Cost");
-            return returned;
+            return Target.Get_Identifier() + "/" + Flat_Cost + "," + Percent_Cost;
         }
         public override bool Set_Variable(string name, object value)
         {

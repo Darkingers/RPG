@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace RPG
 {
-    enum Relation { More, Less, Equal};
-    enum Numeral { Integer, Double };
+    enum Relation { More='>', Less='<', Equal='='};
+    enum Numeral { Integer, Double ='%'};
 
     class Trigger:ScriptObject
     {
@@ -39,7 +39,7 @@ namespace RPG
         {
             return base.Copy(copied) && Copy(copied.Get_Threshold(), copied.Get_Relation(), copied.Get_Numeral(), new List<Skill>(copied.Get_Skills())) ;
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Trigger(this);
         }
@@ -57,10 +57,6 @@ namespace RPG
             }
             
         }
-        public bool Add_Skill(string identifier)
-        {
-           return  Add_Skill((Skill)Database.Get(identifier).Clone());
-        }
         public bool Add_SkillS(List<Skill> added)
         {
             bool returned = true;
@@ -74,27 +70,9 @@ namespace RPG
             }
             return returned;
         }
-        public bool Add_SkillS(string[] identifiers)
-        {
-            bool returned = true;
-            foreach (string identifier in identifiers)
-            {
-                if (!Add_Skill(identifier))
-                {
-                    returned = false;
-                }
-
-            }
-            return returned;
-        }
-
         public bool Remove_Skill(Skill removed)
         {
            return  Skills.Remove(removed);
-        }
-        public bool Remove_Skill(string identifier)
-        {
-            return Skills.Remove((Skill)Database.Get(identifier).Clone());
         }
         public bool Remove_Skills(List<Skill> removed)
         {
@@ -102,19 +80,6 @@ namespace RPG
             foreach (Skill skill in removed)
             {
                 if (!Remove_Skill(skill))
-                {
-                    returned = false;
-                }
-
-            }
-            return returned;
-        }
-        public bool Remove_Skills(string[] identifiers)
-        {
-            bool returned = true;
-            foreach (string identifier in identifiers)
-            {
-                if (!Remove_Skill(identifier))
                 {
                     returned = false;
                 }
@@ -225,14 +190,13 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-                base.ToString(tab) +
-                tab+ MyParser.Write(Threshold, "Double", "Threshold") +
-                tab+MyParser.Write(Relation, "Relation", "Relation") +
-                tab+MyParser.Write(Numeral, "Numeral", "Numeral") +
-                tab+MyParser.Write(Skills, "Array<Skill>", "Skills");
+            string returned = "value" + Relation + Threshold + Numeral+"/";
+            foreach(Skill sk in Skills)
+            {
+                returned += ToString() + Environment.NewLine;
+            }
             return returned;
         }
         public override bool Set_Variable(string name, object value)

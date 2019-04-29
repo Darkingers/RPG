@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,31 @@ namespace RPG
 {
     class ScriptVisitor : GrammarBaseVisitor<object>
     {
-        ScriptObject Target=new ScriptObject();
-        object Returned=null;
-        string relevant_type;
+        static protected Dictionary<string, object> Factory = new Dictionary<string, object>()
+        {
+            { "Mod", new Mod() },
+            { "Record",new Record() },
+            { "Tile",new Tile() },
+            { "Tag",new Tag() },
+            {"Slot",new Slot() },
+            {"Stat_Resource",new Stat_Resource() },
+            {"Stat_Regeneration", new Stat_Regeneration() },
+            {"Stat_Modifier",new Stat_Modifier() },
+            {"Script",new Script() },
+            {"Skill",new Skill() },
+            {"Item",new Item() },
+            {"Map",new Map() },
+            {"Entity",new Entity() },
+            {"Player",new Player() },
+            {"Item_Stat",new Item_Stat() },
+            {"Cost_Value",new Cost_Value() },
+            {"Cost",new Cost() },
+            {"Cooldown",new Cooldown() }
+        };
+        protected ScriptObject Target =new ScriptObject();
+        protected object Returned =null;
+        protected string relevant_type;
+        static protected Mod Source;
 
         public bool Add_Arguments(List<string> arg_names, object[] values)
         {
@@ -30,6 +53,10 @@ namespace RPG
         {
             return Target.Set_Variable(name, value);
         }
+        public static void Set_Source(Mod source)
+        {
+            Source = source;
+        }
         public object Create_Variable(string scope, string name, object value)
         {
             if (scope == "")
@@ -38,23 +65,37 @@ namespace RPG
             }
             return Target.Add_Variable(scope, name, value);
         }
-        public object Create_Variable(string scope,string name, string type, string value)
-        {
-            return Create_Variable(scope, name, MyParser.Interpret(type, value));
-        }
         public void Set_Target(ScriptObject target)
         {
             Target = target;
         }
 
-        public override object Visit([NotNull] IParseTree tree)
+
+        public override object VisitFile([NotNull] GrammarParser.FileContext context)
         {
-            object returned = base.Visit(tree);
-            if (Target != null)
+            for(int i = 0; i < context.@object().Length; i++)
             {
-                Target.Clear();
+                string type = context.@object(i).typeName().GetText();
+                Record added=(Record)Visit(context.@object(i));
+                
+                added.Set_Source(Source);
+                System.Console.WriteLine(added.Get_Identifier());
+                Database.Add_Record(added);
             }
-            return Returned;
+            return null;
+        }
+        public override object VisitObject([NotNull] GrammarParser.ObjectContext context)
+        {
+            string type = context.typeName().GetText();
+            ScriptObject returned = ((ScriptObject)Factory[context.typeName().GetText()]).Clone();
+            ScriptObject temp = Target;
+            
+           
+            Target = returned;
+            Visit(context.block());
+            Target = temp;
+            
+            return returned;
         }
         public override object VisitCondition([NotNull] GrammarParser.ConditionContext context)
         {
@@ -86,7 +127,25 @@ namespace RPG
         public override object VisitVariableDeclaration([NotNull] GrammarParser.VariableDeclarationContext context)
         {
             relevant_type = context.typeName().GetText();
-            return Create_Variable(context.SCOPE().GetText(), context.varName().GetText(), Visit(context.expression()));
+            string scope = "";
+            if (context.SCOPE() == null)
+            {
+                scope = "Local";
+            }
+            else
+            {
+               scope = context.SCOPE().GetText();
+            }
+            object value = null;
+            if (context.expression() == null)
+            {
+                value = null;
+            }
+            else
+            {
+                value = Visit(context.expression());
+            }
+            return Create_Variable(scope, context.varName().GetText(),value);
         }
         public override object VisitWhileStatement([NotNull] GrammarParser.WhileStatementContext context)
         {
@@ -135,7 +194,6 @@ namespace RPG
             }
             return returned;
         }
-
         public override object VisitIfStatement([NotNull] GrammarParser.IfStatementContext context)
         {
             if ((bool)Visit(context.condition()))
@@ -221,9 +279,49 @@ namespace RPG
         }
         public override object VisitSimpleExpression([NotNull] GrammarParser.SimpleExpressionContext context)
         {
+            if (relevant_type == "Array<Stat_Resource>")
+            {
+                
+            }
+
             if (context.varName() != null)
             {
                 return Target.Get_Variable(context.varName().GetText());
+            }
+            else if (context.@object() != null)
+            {
+                return Visit(context.@object());
+            }
+            else if (context.array() != null)
+            {
+                List<object> returned = new List<object>();
+                for(int i = 0; i < context.array().expression().Length;i++)
+                {
+                    returned.Add(Visit(context.array().expression(i)));
+                }
+                return returned;
+            }
+            else if (context.grid() != null)
+            {
+                List < List<object> > returned= new List<List<object>>();
+                for(int i = 0; i < context.grid().array().Length; i++)
+                {
+                    returned.Add((List<object>)Visit(context.grid().array(i)));
+                }
+                return returned;
+            }
+            else if (context.block() != null)
+            {
+                return context.block();
+            }
+            else if (context.dictionary() != null)
+            {
+                Dictionary<object, object> returned = new Dictionary<object, object>();
+                for (int i = 0; i < context.dictionary().expression().Length; i++)
+                {
+                    returned.Add(Visit(context.dictionary().expression(i)), Visit(context.dictionary().expression(++i)));
+                }
+                return returned;
             }
             else if (context.functionStatement() != null)
             {
@@ -231,11 +329,19 @@ namespace RPG
             }
             else if (context.STRING() != null)
             {
-                return context.STRING().GetText();
+                string text = context.STRING().GetText();
+                text=text.Remove(0, 1);
+                text = text.Remove(text.Length-1, 1);
+                return text;
+            }
+            else if (context.POINT() != null)
+            {
+                string[] parsed = context.POINT().GetText().Split(':');
+                return new Point(int.Parse(parsed[0]), int.Parse(parsed[1]));
             }
             else if (context.DOUBLE() != null)
             {
-                return double.Parse(context.DOUBLE().GetText());
+                return double.Parse(context.DOUBLE().GetText().Replace('.',','));
             }
             else if (context.INT() != null)
             {
@@ -245,17 +351,20 @@ namespace RPG
             {
                 return Database.Get(context.REFERENCE().GetText());
             }
-            else if (context.INTERPRETED() != null)
-            {
-                return MyParser.Interpret(relevant_type, context.INTERPRETED().GetText());
-            }
             else if (context.BOOLEAN() != null)
             {
                 return bool.Parse(context.BOOLEAN().GetText());
             }
+            else if (context.SCRIPT() != null)
+            {
+                string text = context.SCRIPT().GetText();
+                text = text.Remove(0, 1);
+                text = text.Remove(text.Length - 1, 1);
+                return text;
+            }
+            
             else return null;
-        }
-        
+        } 
         public override object VisitArguments([NotNull] GrammarParser.ArgumentsContext context)
         {
             List<object> args = new List<object>();

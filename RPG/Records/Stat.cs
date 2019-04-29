@@ -34,9 +34,13 @@ namespace RPG
         {
             return base.Copy(copied) && Copy(copied.Get_Flat(), copied.Get_Percent());
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Stat(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Stat)copied);
         }
 
         public virtual bool Modify_Current(double value)
@@ -97,13 +101,9 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string temp =
-                tab+base.ToString() +
-                tab+MyParser.Write(Flat, "Double", "Flat") +
-                tab+MyParser.Write(Percent, "Double", "Percent");
-            return temp;
+            return base.ToString()+"/"+Flat + "," + Percent;
         }
         public override bool Set_Variable(string name, object value)
         {

@@ -1,19 +1,22 @@
-Object Item{
-	Reference<Mod> Source=Base:Base;
-	String Name="Basic Shield";
+Item{
+	Mod Source=Base:Base;
+	String Name="Basic_Shield";
    	String Description="This is a basic shield";
-   	Array<Reference<Tag>> Tags={Base:Defense,Base:Shield,Base:One_Handed};
+   	Array<Tag> Tags={Base:Defense,Base:Shield,Base:One_Handed};
 
-  	Double Rarity=0,1;
+  	Double Rarity=0.1;
     	Double Worth=100.0;
- 	Reference<Slot> Slot=Base:Left_Hand;
+ 	Slot Slot=Base:Grip;
    	Array<Item_Stat> Stats={
-		Reference<Stat> Target=Base:Health; 
+		Item_Stat{
+		Stat Target=Base:Health; 
 		Double Percent=100.0;
 		Double Flat=50.0;
-		,
-		Reference<Stat> Target=Base:Mana 
+		},
+		Item_Stat{
+		Stat Target=Base:Mana; 
 		Double Percent=100.0; 
 		Double Flat=50.0;
+		}
 	};
 }

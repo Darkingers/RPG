@@ -24,7 +24,16 @@ namespace RPG
 
         public Tile()
         {
-            Copy(null,null,new Point(0,0),new List<Script>(), new List<Script>(), new List<Script>(),new Dictionary<Direction, Tile>(), new List<MovementMode>());
+            Copy(
+                null,
+                null,
+                new Point(0,0),
+                new List<Script>(),
+                new List<Script>(),
+                new List<Script>(),
+                new Dictionary<Direction, Tile>(), 
+                new List<MovementMode>()
+                );
         }
         public Tile(Record type,Bitmap image,Entity entity ,Point position,List<Script> on_leave ,List<Script> on_enter,List<Script> on_tick,Dictionary<Direction,Tile> neighbours,List<MovementMode> travel_mods):base(type)
         {
@@ -39,9 +48,9 @@ namespace RPG
             return 
                 base.Copy(copied)
                 &&
-                Copy( 
-                new Bitmap(copied.Get_Image()), 
-                new Entity(copied.Get_Entity()), 
+                Copy(
+                copied.Get_Image(),
+                copied.Get_Entity()==null?null:new Entity(copied.Get_Entity()), 
                 new Point(copied.Get_Position().X, copied.Get_Position().Y),
                 new List<Script>(copied.Get_On_Leave()), 
                 new List<Script>(copied.Get_On_Enter()),
@@ -53,7 +62,7 @@ namespace RPG
         }
         public bool Copy(Bitmap image ,Entity entity,Point position,  List<Script> on_leave , List<Script> on_enter , List<Script> on_tick ,  Dictionary<Direction, Tile> neighbours ,List<MovementMode> travel_mods)
         {
-            return
+            return 
             Set_Image(image) &&
             Set_Entity(entity) &&
             Set_Position(position) &&
@@ -63,41 +72,15 @@ namespace RPG
             Set_Neighbours(neighbours) &&
             Set_Travel_Modes(travel_mods);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Tile(this);
         }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Tile)copied);
+        }
 
-        public bool Place(Entity entity)
-        {
-            if (Entity == null) {
-                Set_Entity((Entity)entity);
-                object[] args = { entity };
-                foreach (Script iter in On_Enter)
-                {
-                    iter.Execute(args);
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-          
-        }
-        public bool Spawn(string identifier)
-        {
-            if (Entity == null)
-            {
-                Set_Entity((Entity)Database.Get(identifier).Clone());
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
-        }
         public bool Enter(Entity entity)
         {
             if (entity == null)
@@ -105,6 +88,7 @@ namespace RPG
                 return false;
             }
             Set_Entity(entity);
+            Entity.Set_Position(this);
             foreach(Script iter in On_Enter)
             {
                 object[] args = { entity };
@@ -139,16 +123,34 @@ namespace RPG
             }
             return true;
         }
+        public bool Spawn(Entity entity)
+        {
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                Enter((Entity)entity.Clone());
+                return true;
+            }
+            
+        }
+
+        public void Draw(Graphics scene, Rectangle dest)
+        {
+            scene.DrawImage(Image, dest);
+            if (Entity != null)
+            {
+                scene.DrawImage(Entity.Get_Image(), dest);
+            }
+        }
 
         public bool Can_Move(MovementMode mode)
         {
             return (Travel_Modes.Contains(mode) && Entity == null);
         }
 
-        public bool Add_On_Enter(string identifier)
-        {
-            return Add_On_Enter((Script)Database.Get(identifier).Clone());
-        }
         public bool Add_On_Enter(Script script)
         {
             if (On_Enter.Contains(script))
@@ -162,19 +164,11 @@ namespace RPG
             }
             
         }
-        public bool Remove_On_Enter(string identifier)
-        {
-            return Remove_On_Enter((Script)Database.Get(identifier).Clone());
-        }
         public bool Remove_On_Enter(Script script)
         {
             return On_Enter.Remove(script);
         }
 
-        public bool Add_On_Tick(string identifier)
-        {
-            return Add_On_Tick((Script)Database.Get(identifier).Clone());
-        }
         public bool Add_On_Tick(Script script)
         {
             if (On_Tick.Contains(script))
@@ -187,10 +181,6 @@ namespace RPG
                 return true;
             }
             
-        }
-        public bool Remove_On_Tick(string identifier)
-        {
-           return Remove_On_Tick((Script)Database.Get(identifier).Clone());
         }
         public bool Remove_On_Tick(Script script)
         {
@@ -205,11 +195,6 @@ namespace RPG
             }
             
         }
-
-        public bool Add_On_Leave(string identifier)
-        {
-            return Add_On_Leave((Script)Database.Get(identifier).Clone());
-        }
         public bool Add_On_Leave(Script script)
         {
             if (On_Leave.Contains(script))
@@ -222,10 +207,6 @@ namespace RPG
                 return true;
             }
            
-        }
-        public bool Remove_On_Leave(string identifier)
-        {
-            return Remove_On_Leave((Script)Database.Get(identifier).Clone());
         }
         public bool Remove_On_Leave(Script script)
         {
@@ -245,40 +226,9 @@ namespace RPG
             }
             
         }
-        public bool Add_Travel_Mode(string identifier)
-        {
-            switch (identifier)
-            {
-                case "Walk": return Add_Travel_Mode(MovementMode.Walk);
-                case "Fly": return Add_Travel_Mode(MovementMode.Fly);
-                case "Phase": return Add_Travel_Mode(MovementMode.Phase);
-                default: return false;
-            }
-        }
-        public bool Add_Travel_Modes(string[] identifiers)
-        {
-            bool returned = true;
-            foreach(string id in identifiers)
-            {
-                if (!Add_Travel_Mode(id))
-                {
-                    returned = false;
-                }
-            }
-            return returned;
-        }
         public void Remove_Travel_Mode(MovementMode mode)
         {
             Travel_Modes.Remove(mode);
-        }
-        public void Remove_Travel_Mode(string identifier)
-        {
-            switch (identifier)
-            {
-                case "Walk": Remove_Travel_Mode(MovementMode.Walk); break;
-                case "Fly": Remove_Travel_Mode(MovementMode.Fly); break;
-                case "Phase": Remove_Travel_Mode(MovementMode.Phase); break;
-            }
         }
 
         public Bitmap Get_Image()
@@ -412,19 +362,6 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string returned =
-                   base.ToString(tab) +
-                   tab+MyParser.Write(Image, "Image", "Image") +
-                   tab+MyParser.Write(Entity,"Entity", "Entity") +
-                   tab + MyParser.Write(Position,"Point","Position") +
-                   tab + MyParser.Write(Travel_Modes, "Array<MovementMode>", "Travel_Modes")+
-                   tab + MyParser.Write(On_Leave, "Array<Script>", "On_Leave") +
-                   tab + MyParser.Write(On_Enter, "Array<Script>", "On_Enter") +
-                   tab + MyParser.Write(On_Tick, "Array<Script>", "On_Tick");
-            return returned;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)
@@ -457,8 +394,7 @@ namespace RPG
         {
             switch (name)
             {
-                case "Spawn":return Spawn((string)args[0]);
-                case "Place":return Place((Entity)args[0]);
+                case "Spawn":return Spawn((Entity)args[0]);
                 case "Can_Move":return Can_Move((MovementMode)args[0]);
                 case "Add_On_Enter":return Add_On_Enter((Script)args[0]);
                 case "Add_On_Tick":return Add_On_Tick((Script)args[0]);

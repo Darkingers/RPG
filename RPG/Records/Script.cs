@@ -10,17 +10,18 @@ namespace RPG
 {
     class Script:Record
     {
-        IParseTree Tree;
-        ScriptVisitor Visitor;
-        List<string> Arguments;
+        protected IParseTree Tree;
+        protected ScriptVisitor Visitor;
+        protected List<string> Arguments;
+        protected string Return_Type;
 
         public Script()
         {
-            Copy(null, new ScriptVisitor(), new List<string>());
+            Copy(null, new ScriptVisitor(), new List<string>(),"INVALID");
         }
-        public Script(Record type,IParseTree tree,ScriptVisitor visitor,List<string> arguments) : base(type)
+        public Script(Record type,IParseTree tree,ScriptVisitor visitor,List<string> arguments,string return_type) : base(type)
         {
-            Copy(tree,visitor,arguments);
+            Copy(tree,visitor,arguments,return_type);
         }
         public Script(Script cloned)
         {
@@ -28,18 +29,23 @@ namespace RPG
         }
         public bool Copy(Script copied)
         {
-            return base.Copy(copied) && Copy(copied.Get_Tree(),copied.Get_Visitor(),copied.Get_Arguments());
+            return base.Copy(copied) && Copy(copied.Get_Tree(),copied.Get_Visitor(),copied.Get_Arguments(),copied.Get_Return_Type());
         }
-        public bool Copy(IParseTree tree,ScriptVisitor visitor,List<string> arguments)
+        public bool Copy(IParseTree tree,ScriptVisitor visitor,List<string> arguments,string return_type)
         {
             return
-            Set_Tree(tree)&&
-            Set_Visitor(visitor)&&
-            Set_Arguments(arguments);
+            Set_Tree(tree) &&
+            Set_Visitor(visitor) &&
+            Set_Arguments(arguments) &&
+            Set_Return_Type(return_type);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Script(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Script)copied);
         }
 
         public bool Check_Syntax(string text)
@@ -52,7 +58,7 @@ namespace RPG
             ITokenStream tokens = new CommonTokenStream(lexer);
             GrammarParser parser = new GrammarParser(tokens);
             parser.BuildParseTree = true;
-            Tree = parser.script();
+            Tree = parser.statementList();
             return Check_Syntax(text);
         }
         public object Execute(object[] args)
@@ -81,6 +87,11 @@ namespace RPG
             Arguments = arguments;
             return true;
         }
+        public bool Set_Return_Type(string type)
+        {
+            Return_Type = type;
+            return true;
+        }
 
         public ScriptVisitor Get_Visitor()
         {
@@ -94,16 +105,11 @@ namespace RPG
         {
             return Arguments;
         }
-
-        public override string ToString(string tab)
+        public string Get_Return_Type()
         {
-            string returned =
-                base.ToString(tab) +
-                tab + MyParser.Write(Tree, "IParseTree", "Tree") +
-                tab + MyParser.Write(Visitor, "ScriptVisitor", "Visitor") +
-                tab + MyParser.Write(Arguments, "Array<String>", "Arguments");
-            return returned;
+            return Return_Type;
         }
+
         public override bool Set_Variable(string name, object value)
         {
             switch (name)
@@ -111,7 +117,7 @@ namespace RPG
                 case "Tree": return Set_Tree((IParseTree)value);
                 case "Visitor": return Set_Visitor((ScriptVisitor)value);
                 case "Arguments": return Set_Arguments(MyParser.Convert_Array<string>(value));
-                case "Executed":return Build((string)value);
+                case "Executed":return Set_Tree((IParseTree)value);
                 default: return base.Set_Variable(name, value);
             }
         }
@@ -122,6 +128,7 @@ namespace RPG
                 case "Tree": return Get_Tree();
                 case "Visitor": return Get_Visitor();
                 case "Arguments": return Get_Arguments();
+                case "Retrun_Type":return Get_Return_Type();
                 default: return base.Get_Variable(name);
             }
         }
@@ -132,6 +139,7 @@ namespace RPG
                 case "Execute": return Execute(args);
                 case "Build": return Build((string)args[0]);
                 case "Check_Syntax": return Check_Syntax((string)args[0]);
+                case "Return_Type":return Set_Return_Type((string)args[0]);
                 default: return base.Call_Function(name, args);
             }
         }

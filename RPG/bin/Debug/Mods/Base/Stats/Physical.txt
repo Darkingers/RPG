@@ -1,24 +1,24 @@
-Object Stat_Modifier{
-      Reference<Mod> Source="Base";
+Stat_Modifier{
+      Mod Source=Base:Base;
       String Name="Armour";
       String Description=" Reduces damage you take from physical attacks";
-      Array<Reference<Tag>> Tags={ 
+      Array<Tag> Tags={ 
 		Base:Physical,
 		Base:Attack
 		};
-      Modifier Intention={Decrease};
+      Modifier Intention=Decrease;
       Double Flat=0.0;
       Double Percent=0.0;
 }
-Object Stat_Modifier{
-      Reference<Mod> Source=Base:Base;
-      String Name="Physical Damage";
+Stat_Modifier{
+      Mod Source=Base:Base;
+      String Name="Physical_Damage";
       String Description="Increases your physical damage ";
-      Array<Reference<Tag>> Tags={
+      Array<Tag> Tags={
 		Base:Physical,
 		Base:Modifier
 		};
-      Modifier Intention={Increase};
+      Modifier Intention=Increase;
       Double Flat=0.0;
-      Double Percent=0.0
+      Double Percent=0.0;
 }

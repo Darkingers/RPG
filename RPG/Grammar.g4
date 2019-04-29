@@ -4,9 +4,11 @@ grammar Grammar;
  * Parser Rules
  */
  
-script				:statementList;
-statementList		:statement*;
+file				:object*;
+object				:typeName block;
 block				: CURLY1 statementList CURLY2 ;
+statementList		:statement*;
+
 statement
 		:
 		variableDeclaration
@@ -29,8 +31,12 @@ assignmentStatement	: varName EQUALS expression SEMI;
 functionStatement	: (varName DOT)? functionName arguments(DOT functionName arguments)*  SEMI;
 
 varName			    : ID;
-typeName            : ID;
+typeName            : ID('<'typeName(','typeName)*'>')?;
 functionName        : ID;
+dictionary		    : CURLY1((expression'@'expression)(','expression'@'expression)*)?CURLY2;
+grid				: CURLY1 array* CURLY2;
+array				: CURLY1((expression)(','(expression))*)?CURLY2;
+
 
 arguments			:  BRACKET1(expression (PUNC expression)*)? BRACKET2;
 condition			: (simpleExpression) comparator (simpleExpression);
@@ -38,21 +44,28 @@ comparator			:  LT | GT | LTE | GTE | EQ | NEQ;
 expression			: simpleExpression (operator simpleExpression)*;
 simpleExpression	
 					:
-					varName
+					
+					object
 					| functionStatement
-					| (STRING
-					| BOOLEAN
+					| array
+					| varName
+					| block
+					| dictionary
+					| grid
+					| (BOOLEAN
 					| NULL
 					| DOUBLE
 					| INT
-					| INTERPRETED
 					| REFERENCE
+					| SCRIPT
+					| STRING
+					| POINT
 					)
 					;
+
+
+
 operator: PLUST | MINUS | MULT | DIV | POWER;
-
-
-
 
 /*
  * Lexer Rules
@@ -71,6 +84,8 @@ GTE		: '>=';
 EQ		: '==';
 NEQ		: '!=';
 
+ID		: [a-zA-Z][a-zA-Z0-9_]*;
+
 PUNC	: ',';
 SEMI	: ';';
 EQUALS	: '=';
@@ -83,15 +98,15 @@ WHILE	: 'while';
 CURLY1	: '{';
 CURLY2	: '}';
 BRACKET1: '(';
-PARSEMODE: 'Object' | 'Script';
 BRACKET2: ')';
 DOT		: '.';
 NULL	: 'null';
 BOOLEAN	: 'true' | 'false';
-STRING	: '"' (~[\r\n])* '"';
+STRING	: '"'(~[\r\n])*'"';
+SCRIPT	: '['(~[\r\n])*']';
+POINT	: [0-9]+':'[0-9]+;
 REFERENCE:[a-zA-Z][a-zA-Z0-9_]*':'[a-zA-Z][a-zA-Z0-9_]*;
 DOUBLE  : [0-9]+'.'[0-9]+;
 INT     : [0-9]+;
-INTERPRETED: '{' (~[\r\n\t])* '}';
-ID		: [a-zA-Z][a-zA-Z0-9_]*;
+
 WS		: (' '| '\t' | '\n' | '\r') -> skip;

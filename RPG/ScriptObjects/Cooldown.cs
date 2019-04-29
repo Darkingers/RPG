@@ -19,18 +19,20 @@ namespace RPG
 
         public Cooldown()
         {
-            Copy(0, 0, null);
             Lock = new Semaphore(1, 1);
+            Copy(0, 0, null);
+
         }
         public Cooldown(ScriptObject scriptobject, double time, double time_left, Func<object, object> endfunction) : base(scriptobject)
         {
-            Copy(time, time_left, endfunction);
             Lock = new Semaphore(1, 1);
+            Copy(time, time_left, endfunction);
         }
         public Cooldown(Cooldown cloned)
         {
-            Copy(cloned);
             Lock = new Semaphore(1, 1);
+            Copy(cloned);
+            
         }
         public bool Copy(Cooldown copied)
         {
@@ -43,7 +45,7 @@ namespace RPG
             Set_Time_Left(time)&&
             Set_EndFunction(endfunction);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Cooldown(this);
         }
@@ -131,14 +133,9 @@ namespace RPG
             } 
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-                base.ToString(tab) +
-                tab + MyParser.Write(Time, "Double", "Time") +
-                tab + MyParser.Write(Time_Left, "Double", "Time_Left") +
-                tab + MyParser.Write(Done, "Bool", "Done");
-            return returned;
+            return Time+"/"+Time_Left;
         }
         public override bool Set_Variable(string name, object value)
         {

@@ -14,9 +14,22 @@ namespace RPG
 
 
         }
-        public Player(Player cloned):base(cloned)
+        public Player(Player cloned)
+        {
+            Copy(cloned);
+        }
+        public Player(Entity type) : base(type)
         {
 
+        }
+
+        public bool Copy(Player copied)
+        {
+            return base.Copy(copied);
+        }
+        public override ScriptObject Clone()
+        {
+            return new Player(this);
         }
 
     }

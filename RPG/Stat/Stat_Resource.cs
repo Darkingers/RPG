@@ -34,11 +34,15 @@ namespace RPG
             Set_Current(current) &&
             Set_Triggers(triggers);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Stat_Resource(this);
         }
-        
+        public override bool Assign(Record copied)
+        {
+            return Copy((Stat_Resource)copied);
+        }
+
         public override bool Modify_Current(double value)
         {
             Set_Current(value + Current);
@@ -136,14 +140,9 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string temp =
-                base.ToString(tab) +
-                tab + MyParser.Write(Triggers, "Array<Trigger>", "Triggers")+
-                tab + MyParser.Write(Max, "Double", "Max") +
-                tab + MyParser.Write(Current, "Double", "Current");
-            return temp;
+            return Get_Identifier()+Max + "/" + Current;
         }
         public override bool Set_Variable(string name, object value)
         {

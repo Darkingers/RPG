@@ -64,7 +64,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScriptObjects\GameTimer.cs" />
+    <Compile Include="GameTimer.cs" />
     <Compile Include="Grammar.g4.lexer.cs">
       <DependentUpon>Grammar.g4</DependentUpon>
     </Compile>

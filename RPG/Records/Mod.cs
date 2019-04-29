@@ -32,9 +32,13 @@ namespace RPG
             Set_Path(path)&&
             Set_Load_Order(load_order);
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Mod(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Mod)copied);
         }
 
         public string Get_Path()
@@ -44,6 +48,10 @@ namespace RPG
         public List<string> Get_Load_Order()
         {
             return Load_Order;
+        }
+        public override string Get_Identifier()
+        {
+            return Name+":"+Name;
         }
 
         public bool Set_Path(string path)
@@ -57,14 +65,6 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string returned =
-                base.ToString(tab)
-                 + tab + MyParser.Write(Load_Order, "Array<String>", "Load_Order")
-                 + tab + MyParser.Write(Path, "String", "Path");
-            return returned;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)

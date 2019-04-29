@@ -32,7 +32,7 @@ namespace RPG
         {
            return base.Copy(copied)&& Copy(new List<Cost_Value>(copied.Get_Costs()));
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Cost(this);
         }
@@ -139,11 +139,13 @@ namespace RPG
             return false;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned=
-                base.ToString(tab)+
-                tab+ MyParser.Write(Costs, "Array<Cost_Value>", "Costs");
+            string returned = "";
+            foreach(Cost_Value cost in Costs)
+            {
+                returned += cost.ToString() + Environment.NewLine;
+            }
             return returned;
         }
         public override bool Set_Variable(string name, object value)

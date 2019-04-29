@@ -1,32 +1,32 @@
-Object Tile{
-    Reference<Mod> Source=Base:Base;
+Tile{
+    Mod Source=Base:Base;
     String Name="Lava";
     String Description="This is lava";
-    Array<Reference<Tag>> Tags={Base:Flyable};
-    Reference<Image> Image=Base:Lava.png;
+    Array<Tag> Tags={Base:Flyable};
+    Image Image=Base:Lava_Image;
     Array<MovementMode> Travel_Modes={Fly};
 }
-Object Tile{
-    Reference<Mod> Source=Base:Base;
+Tile{
+    Mod Source=Base:Base;
     String Name="Grass";
     String Description="This is grass ";
-    Array<Reference<Tag>> Tags={Base:Walkable , Base:Flyable , Base:Phaseable};
-    Reference<Image> Image=Base:Grass.png;
+    Array<Tag> Tags={Base:Walkable , Base:Flyable , Base:Phaseable};
+    Image Image=Base:Grass_Image;
     Array<MovementMode> Travel_Modes={Walk , Fly , Phase};
 }
-Object Tile{
-    Reference<Mod> Source=Base:Base;
+Tile{
+    Mod Source=Base:Base;
     String Name="Wall";
     String Description="This is a wall ";
-    Array<Reference<Tag>> Tags={Base:Phaseable , Base:Flyable};
-    Reference<Image> Image=Base:Wall.png;
+    Array<Tag> Tags={Base:Phaseable , Base:Flyable};
+    Image Image=Base:Wall_Image;
     Array<MovementMode> Travel_Modes={Fly , Phase};
 }
-Object Tile{
-    Reference<Mod> Source=Base:Base;
+Tile{
+    Mod Source=Base:Base;
     String Name="Water";
     String Description="This is Water";
-    Array<Reference<Tag>> Tags={Base:Flyable};
-    Reference<Image> Image=Base:Water.png;
+    Array<Tag> Tags={Base:Flyable};
+    Image Image=Base:Water_Image;
     Array<MovementMode> Travel_Modes={Fly};
 }

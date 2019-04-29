@@ -39,8 +39,12 @@ namespace RPG
         {
             return base.Copy(copied)&&Copy(copied.Get_Source(), copied.Get_Name(), copied.Get_Description(), new List<Tag>(copied.Get_Tags()));
         }
+        public virtual bool Assign(Record copied)
+        {
+            return Copy(copied);
+        }
 
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Record(this);
         }
@@ -48,10 +52,6 @@ namespace RPG
         public bool Contains_Tag(Tag tag)
         {
             return Tags.Contains(tag);
-        }
-        public bool Contains_Tag(string identifier)
-        {
-            return Tags.Contains(Database.Get_Tag(identifier));
         }
         public bool Contains_Tags(List<Tag> tags)
         {
@@ -63,18 +63,6 @@ namespace RPG
                 }
             }
             return true;
-        }
-        public bool Contains_Tags(string[] tags)
-        {
-            foreach(string tag in tags)
-            {
-                if (!Contains_Tag(tag))
-                {
-                    return false;
-                }
-            }
-            return true;
-
         }
 
         public bool Add_Tag(Tag tag)
@@ -89,16 +77,6 @@ namespace RPG
                 return true;
             }
         }
-        public bool Add_Tag(string identifier)
-        {
-            try
-            {
-                return Add_Tag(Database.Get_Tag(identifier));
-            }catch(Exception e)
-            {
-                return false;
-            }
-        }
         public bool Add_Tags(List<Tag> tags)
         {
             bool returned = true;
@@ -111,26 +89,9 @@ namespace RPG
             }
             return returned;
         }
-        public bool Add_Tags(string[] identifiers)
-        {
-            bool returned = true;
-            foreach (string identifier in identifiers)
-            {
-                if (!Add_Tag(identifier))
-                {
-                    returned = false;
-                }
-            }
-            return returned;
-        }
-
         public bool Remove_Tag(Tag tag)
         {
             return Tags.Remove(tag);
-        }
-        public bool Remove_Tag(string identifier)
-        {
-           return Tags.Remove(Database.Get_Tag(identifier));
         }
         public bool Remove_Tags(List<Tag> tags)
         {
@@ -138,18 +99,6 @@ namespace RPG
             foreach(Tag tag in tags)
             {
                 if (!Remove_Tag(tag))
-                {
-                    returned = false;
-                }
-            }
-            return returned;
-        }
-        public bool Remove_Tags(string[] identifiers)
-        {
-            bool returned = true;
-            foreach(string identifier in identifiers)
-            {
-                if (!Remove_Tag(identifier))
                 {
                     returned = false;
                 }
@@ -182,7 +131,7 @@ namespace RPG
         {
             return Tags;
         }
-        public string Get_Identifier()
+        public virtual string Get_Identifier()
         {
             return Source.Get_Name() + ":" + Name;
         }
@@ -208,14 +157,9 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
+        public override string ToString()
         {
-            string returned =
-            tab + MyParser.Write(Source, "Mod", "Source") +
-            tab + MyParser.Write(Name, "String", "Name") +
-            tab + MyParser.Write(Description, "String", "Description") +
-            tab + MyParser.Write(Tags, "Array<Tag>", "Tags");
-            return returned;
+            return Get_Identifier();
         }
         public override bool Set_Variable(string name,object value)
         {
@@ -224,8 +168,8 @@ namespace RPG
                 case "Source":return Set_Source((Mod)value);
                 case "Name": return Set_Name((string)value);
                 case "Description": return Set_Description((string)value);
-                case "Tag": return Set_Tags((List<Tag>)value);
-                case "Type":return Copy(Database.Get((string)value));
+                case "Tags": return Set_Tags(MyParser.Convert_Array<Tag>(value));
+                case "this":return Assign((Record)value);
                 default:return base.Set_Variable(name, value);
             }
         }

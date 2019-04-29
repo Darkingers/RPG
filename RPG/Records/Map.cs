@@ -34,9 +34,13 @@ namespace RPG
             return base.Copy(copied) && Copy(copied.Get_Replacer(), copied.Get_Tiles(), copied.Get_Starting_Position());
 
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Map(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Map)copied);
         }
 
         public bool Add_Player(Player player)
@@ -71,6 +75,89 @@ namespace RPG
             }
             return true;
         }
+        public void Draw(Graphics scene,int FrameWidth,int FrameHeight,int Width,int Height,Entity observer)
+        {
+            int Sight;
+            int XPos;
+            int YPos;
+            if (observer == null)
+            {
+                Sight = Math.Min(Tiles.Count, Tiles[0].Count);
+                Sight=Sight % 2 == 0 ?Sight / 2 - 1 : Sight / 2;
+                XPos = Tiles.Count / 2;
+                YPos = Tiles[0].Count / 2;
+            }
+            else
+            {
+                Sight = observer.Get_Sight();
+                XPos = observer.Get_Position().X;
+                YPos = observer.Get_Position().Y;
+            }
+
+            int TileAmount = Sight * 2 + 1;
+            int TileWidth = (Width - 2 * FrameWidth) / TileAmount;
+            int TileHeight = (Height - 2 * FrameHeight) / TileAmount;
+
+           
+
+            int Xoffset = FrameWidth;
+            int Yoffset = FrameHeight;
+
+            int rfrom;
+            if(YPos - observer.Get_Sight() < 0)
+            {
+                rfrom = 0;
+                Yoffset += TileHeight * Math.Abs(YPos - Sight);
+            }
+            else
+            {
+                rfrom = YPos - Sight;
+            }
+
+
+            int rto;
+            if(YPos + Sight >= Tiles.Count)
+            {
+                rto= Tiles.Count - 1;
+            }
+            else
+            {
+                rto= YPos + Sight; 
+            }
+
+
+            int cfrom;
+            if (XPos - Sight < 0)
+            {
+                cfrom = 0;
+                Xoffset += TileWidth * Math.Abs(XPos - Sight);
+            }
+            else
+            {
+                cfrom= XPos - Sight;
+            }
+
+            int cto;
+            if (XPos + Sight >= Tiles[0].Count)
+            {
+                cto = Tiles[0].Count - 1;
+            }
+            else
+            {
+                cto= XPos + Sight;
+            }
+
+            Rectangle rect = new Rectangle(0, 0, TileWidth, TileHeight);
+            for (int i = rfrom,y=0; i <= rto; i++,y++)
+            {
+                rect.Y = TileHeight * y+Yoffset;
+                for(int j = cfrom,x=0; j <= cto; j++,x++)
+                {
+                    rect.X = TileWidth * x+Xoffset;
+                    Tiles[i][j].Draw(scene,rect);
+                }
+            }
+        }
 
         public bool Set_Starting_Position(Point start)
         {
@@ -87,6 +174,7 @@ namespace RPG
                     Tiles[i].Add((Tile)Replacer[tiles[i][j]].Clone());
                 }
             }
+            Link();
             return true;
         }
         public bool Set_Tiles(List<List<Tile>> tiles)
@@ -122,17 +210,11 @@ namespace RPG
             return Tiles[y][x];
         }
 
-        public override string ToString(string tab)
-        {
-            string temp =
-                base.ToString(tab);
-            return temp;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)
             {
-                case "Tiles": return Set_Tiles((List<List<int>>)value);
+                case "Tiles": return Set_Tiles(MyParser.Convert_Grid<int>(value));
                 case "Starting_Position": return Set_Starting_Position((Point)value);
                 case "Replacer": return Set_Replacer(MyParser.Convert_Dictionary<int,Tile>(value));
                 default: return base.Set_Variable(name, value);

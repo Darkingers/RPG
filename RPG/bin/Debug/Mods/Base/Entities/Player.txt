@@ -1,45 +1,55 @@
-Object Player{
-	Reference<Mod> Source = Base:Base;
-	String Name="Player";
+Player{
+	Mod Source = Base:Base;
+	String Name="TestPlayer";
 	String Description="Player champ";
-	Array<Reference<Tag>> Tags={Base:Player,Base:Entity};
-	Reference<Image> Image=Base:Player.png;
-	Array<Item> Inventory={Base:Shield};
-	Dictionary<Reference<Slot>,Item> Equipment={Base:Left_Hand@Base:Shield}
+	Array<Tag> Tags={Base:Player,Base:Entity};
+	Image Image=Base:Player_Image;
+	Array<Item> Inventory={Base:Basic_Shield};
+	Dictionary<Slot,Item> Equipment={Base:Grip@Base:Basic_Shield};
     
-	Int Sight = 2;
-	Int Speed = 2;
+	Int Sight = 4;
+	Cooldown Speed = Cooldown{
+		Double Time= 0.1;
+		Double Time_Left=0.0;
+		};
 
-	Array<Stat_Resource> Resources=
-	{
-		Copy Type=Base:Health;
-		Double Flat=500.0; 	
-		Double Percent=100.0; 
-		Double Current=1000.0;
-		,
-		Copy Type=Base:Mana; 
+	Array<Stat_Resource> Resources={
+		Stat_Resource{
+		this=Base:Health;
+      		Double Flat=500.0;
+		Double Percent=100.0;
+  		Double Current=100.0;
+		},
+		Stat_Resource{
+		this=Base:Mana; 
 		Double Flat=500.0;
 		Double Percent=100.0;
  		Double Current=1000.0;
+		}
 	};
-	Array<Stat_Modifier>:Modifiers
-   	{
-		Copy Type =Base:Physical Damage;
-		Double Flat=50; 
-		Double Percent=25;
-		,
-		Copy Type=Base:Armor;
-		Double Flat=20;
-		Double Percent=20;
+	Array<Stat_Modifier> Modifiers={
+		Stat_Modifier{
+		this=Base:Physical_Damage;
+		Double Flat=50.0; 
+		Double Percent=25.0;
+		},
+		Stat_Modifier{
+		this=Base:Armour;
+		Double Flat=20.0;
+		Double Percent=20.0;
+		}
     	};
-    	Array<Stat_Regeneration>:Regenerators
-    	{
-		Copy Type=Base:Health Regeneration; 
-		Double Flat=10;
-		Double Percent=5;
+    	Array<Stat_Regeneration> Regenerators={
+		Stat_Regeneration{
+		this=Base:Health_Regeneration; 
+		Double Flat=10.0;
+		Double Percent=5.0;
+		}
 		,
-		Copy Type=Base:Mana Regeneration; 
-		Double Flat=100;
-		Double Percent=20;
+		Stat_Regeneration{
+		this=Base:Mana_Regeneration; 
+		Double Flat=100.0;
+		Double Percent=20.0;
+		}
 	};
 }

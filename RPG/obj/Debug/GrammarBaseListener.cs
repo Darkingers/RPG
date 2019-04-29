@@ -36,30 +36,30 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class GrammarBaseListener : IGrammarListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// Enter a parse tree produced by <see cref="GrammarParser.file"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScript([NotNull] GrammarParser.ScriptContext context) { }
+	public virtual void EnterFile([NotNull] GrammarParser.FileContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// Exit a parse tree produced by <see cref="GrammarParser.file"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScript([NotNull] GrammarParser.ScriptContext context) { }
+	public virtual void ExitFile([NotNull] GrammarParser.FileContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// Enter a parse tree produced by <see cref="GrammarParser.object"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterStatementList([NotNull] GrammarParser.StatementListContext context) { }
+	public virtual void EnterObject([NotNull] GrammarParser.ObjectContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// Exit a parse tree produced by <see cref="GrammarParser.object"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitStatementList([NotNull] GrammarParser.StatementListContext context) { }
+	public virtual void ExitObject([NotNull] GrammarParser.ObjectContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.block"/>.
@@ -73,6 +73,19 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBlock([NotNull] GrammarParser.BlockContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStatementList([NotNull] GrammarParser.StatementListContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.statementList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStatementList([NotNull] GrammarParser.StatementListContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.statement"/>.
@@ -229,6 +242,45 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunctionName([NotNull] GrammarParser.FunctionNameContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.dictionary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDictionary([NotNull] GrammarParser.DictionaryContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.dictionary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDictionary([NotNull] GrammarParser.DictionaryContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.grid"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGrid([NotNull] GrammarParser.GridContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.grid"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGrid([NotNull] GrammarParser.GridContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.array"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArray([NotNull] GrammarParser.ArrayContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.array"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArray([NotNull] GrammarParser.ArrayContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.arguments"/>.

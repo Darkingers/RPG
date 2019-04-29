@@ -35,9 +35,13 @@ namespace RPG
         {
            return base.Copy(copied) && Copy(new Cost(copied.Get_Cost()), new Cooldown(copied.Get_Cooldown()), new List<Script>(copied.Get_Effects()));
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Skill(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Skill)copied);
         }
 
         public bool Can_Use(Entity source, Entity target)
@@ -106,20 +110,12 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string returned =
-                base.ToString(tab) +
-                tab+MyParser.Write(Cost, "Cost", "Cost")+
-                tab+MyParser.Write(Cooldown, "Cooldown", "Cooldown")+
-                tab+MyParser.Write(Effects, "Array<Script>", "Effects");
-            return returned;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)
             {
-                case "Cost": return Set_Cost((Cost)value);
+                case "Cost": return Set_Cost(
+                    value.GetType()==Cost.GetType() ? (Cost)value:new Cost(new ScriptObject(),MyParser.Convert_Array<Cost_Value>(value)));
                 case "Cooldown": return Set_Cooldown((Cooldown)value);
                 case "Effects": return Set_Effects(MyParser.Convert_Array<Script>(value));
                 default: return base.Set_Variable(name, value);

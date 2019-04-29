@@ -1,42 +1,48 @@
-Object Tag{
-	String Name=Flyable";
+Tag{
+        String Name="Flyable";
 }
-Object Tag{
+Tag{
 	String Name="Walkable";
 }
-Object Tag{
+Tag{
+	String Name="Player";
+}
+Tag{
+	String Name="Entity";
+}
+Tag{
 	String Name="Phaseable";
 }
-Object Tag{
+Tag{
 	String Name="Physical";
 }
-Object Tag{
+Tag{
 	String Name="Attack";
 }
-Object Tag{
+Tag{
 	String Name="Fatal";
 }
-Object Tag{
+Tag{
 	String Name="Resource";
 }
-Object Tag{
+Tag{
 	String Name="Regeneration";
 }
-Object Tag{
+Tag{
 	String Name="Modifier";
 }
-Object Tag{
+Tag{
 	String Name="Map";
 }
-Object Tag{
+Tag{
 	String Name="Large";
 }
-Object Tag{
+ Tag{
 	String Name="Shield";
 }
-Object Tag{
+ Tag{
 	String Name="One_Handed";
 }
-Object Tag{
+ Tag{
 	String Name="Defense";
 }

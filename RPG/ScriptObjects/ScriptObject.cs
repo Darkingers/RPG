@@ -36,20 +36,14 @@ namespace RPG
             Set_Variables(variables);
             return true;
         }
-        public virtual object Clone()
+        public virtual ScriptObject Clone()
         {
             return new ScriptObject(this);
         }
 
         public virtual bool Set_Variable(string name, object value)
         {
-            try
-            {
-                Local_Variables[name]=(ScriptObject)value;
-            }catch(Exception e)
-            {
-                return false;
-            }
+            Local_Variables[name] =value;
             return true;
         }
         public bool Set_Variables(Dictionary<string,object> variables)
@@ -64,8 +58,17 @@ namespace RPG
         }
         public virtual object Get_Variable(string name)
         {
-            return Local_Variables[name];
+            switch (name)
+            {
+                case "Fly":return MovementMode.Fly;
+                case "Walk":return MovementMode.Walk;
+                case "Phase":return MovementMode.Phase;
+                case "Decrease":return Modifier.Decrease;
+                case "Increase":return Modifier.Increase;
+                default: return Local_Variables[name];
+            }
         }
+        
 
         public virtual int Compare(object compared)
         {
@@ -82,10 +85,6 @@ namespace RPG
                 default:throw new Exception("Invalid function name: " + name);
             }
         }
-        public virtual string ToString(string tab)
-        {
-            return "INVALID";
-        }
 
         public void Clear()
         {
@@ -93,6 +92,10 @@ namespace RPG
         }
         public bool Add_Variable(string scope,string name,object value)
         {
+            if (Set_Variable(name, value))
+            {
+                return false;
+            }
             switch (scope)
             {
                 case "Local":
@@ -100,7 +103,7 @@ namespace RPG
                     {
                         return false;
                     }
-                    Local_Variables.Add(name, value);
+                    
                     return true;
                 case "Global":
                     if (Global_Variables.ContainsKey(name))
@@ -118,15 +121,20 @@ namespace RPG
         }
         public override string ToString()
         {
-            return ToString(" ");
+            string returned = "";
+            foreach(object ob in Local_Variables.Values.ToList())
+            {
+                returned += ob.ToString() + Environment.NewLine;
+            }
+            return returned;
         }
         public void Read(string text)
         {
             ITokenSource lexer = new GrammarLexer(new AntlrInputStream(text));
             ITokenStream tokens = new CommonTokenStream(lexer);
             GrammarParser parser = new GrammarParser(tokens);
-            //parser.BuildParseTree = true;
-            IParseTree Tree = parser.script();
+            parser.BuildParseTree = true;
+            IParseTree Tree = parser.block();
             ScriptVisitor visitor = new ScriptVisitor();
             visitor.Set_Target(this);
             visitor.Visit(Tree);

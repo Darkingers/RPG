@@ -30,47 +30,101 @@ namespace RPG
         public Entity()
         {
             Stats = new List<Stat>();
-            Copy(null, MovementMode.Walk,new Cooldown(null,1,0,null), 2, null, Direction.Down, new List<Stat_Resource>(),
-                new List<Stat_Modifier>(), new List<Stat_Regeneration>(), new Dictionary<Slot, Item>(), new List<Item>());
+            Copy(
+                null,
+                MovementMode.Walk,
+                new Cooldown(new ScriptObject(),1,0,null),
+                2, 
+                null, 
+                Direction.Right,
+                new List<Stat_Resource>(),
+                new List<Stat_Modifier>(), 
+                new List<Stat_Regeneration>(), 
+                new Dictionary<Slot, Item>(), 
+                new List<Item>(),
+                new List<Skill>()
+                );
         }
         public Entity(Entity cloned)
         {
             Stats = new List<Stat>();
             Copy(cloned);
         }
-        public Entity(Record type, Bitmap image, MovementMode movement,Cooldown speed, int sight, Tile position, Direction orientation, List<Stat_Resource> resources,  List<Stat_Modifier> modifiers , List<Stat_Regeneration> regenerators, Dictionary<Slot, Item> equipment, List<Item> inventory):base(type)
+        public Entity(
+            Record type,
+            Bitmap image,
+            MovementMode movement,
+            Cooldown speed, 
+            int sight,
+            Tile position,
+            Direction orientation,
+            List<Stat_Resource> resources,  
+            List<Stat_Modifier> modifiers , 
+            List<Stat_Regeneration> regenerators, 
+            Dictionary<Slot, Item> equipment, 
+            List<Item> inventory,
+            List<Skill> skills
+        ):base(type)
         {
             Stats = new List<Stat>();
-            Copy(image, movement, speed, sight, position, orientation, resources, modifiers, regenerators, equipment, inventory);
+            Copy(image, movement, speed, sight, position, orientation, resources, modifiers, regenerators, equipment, inventory,skills);
         }
-        public bool Copy(Bitmap image,MovementMode movement,Cooldown speed,int sight,Tile position,Direction orientation,List<Stat_Resource> resources ,List<Stat_Modifier> modifiers,List<Stat_Regeneration> regenerators,Dictionary<Slot, Item> equipment,List<Item> inventory)
+        public bool Copy(
+            Bitmap image,
+            MovementMode movement,
+            Cooldown speed,
+            int sight,
+            Tile position,
+            Direction orientation,
+            List<Stat_Resource> resources ,
+            List<Stat_Modifier> modifiers,
+            List<Stat_Regeneration> regenerators,
+            Dictionary<Slot, Item> equipment,
+            List<Item> inventory,
+            List<Skill> skills
+            )
         {
             return
-            Set_Speed(speed)&&
-            Set_Sight(sight)&&
-            Set_Position(position)&&
-            Set_Orientation(orientation)&&
-            Set_Image(image)&&
-            Set_Resources(resources)&&
-            Set_Modifiers(modifiers)&&
-            Set_Regenerators(regenerators)&&
-            Set_Equipment(equipment)&&
-            Set_Inventory(inventory)&&
-            Set_Movement_Mode(movement);
+            Set_Speed(speed) &&
+            Set_Sight(sight) &&
+            Set_Position(position) &&
+            Set_Orientation(orientation) &&
+            Set_Image(image) &&
+            Set_Resources(resources) &&
+            Set_Modifiers(modifiers) &&
+            Set_Regenerators(regenerators) &&
+            Set_Equipment(equipment) &&
+            Set_Inventory(inventory) &&
+            Set_Movement_Mode(movement) &&
+            Set_Skills(skills);
         }
         public bool Copy(Entity copied)
         {
-            return Copy(copied.Get_Image(), copied.Get_Movement_Mode(),new Cooldown(copied.Get_Speed()), copied.Get_Sight(),
-                copied.Get_Tile(), copied.Get_Orientation(), 
-                new List<Stat_Resource>(copied.Get_Resources()), 
-                new List<Stat_Modifier>(copied.Get_Modifiers()), 
-                new List<Stat_Regeneration>(copied.Get_Regenerators()),
-                new Dictionary<Slot,Item>(copied.Get_Equipment()),
-                new List<Item>( copied.Get_Inventory()));
+            return
+                 base.Copy(copied)
+                 &&
+                 Copy(
+                 copied.Get_Image(), 
+                 copied.Get_Movement_Mode(),
+                 new Cooldown(copied.Get_Speed()), 
+                 copied.Get_Sight(),
+                 copied.Get_Tile(), 
+                 copied.Get_Orientation(), 
+                 new List<Stat_Resource>(copied.Get_Resources()), 
+                 new List<Stat_Modifier>(copied.Get_Modifiers()), 
+                 new List<Stat_Regeneration>(copied.Get_Regenerators()),
+                 new Dictionary<Slot,Item>(copied.Get_Equipment()),
+                 new List<Item>( copied.Get_Inventory()),
+                 new List<Skill>(copied.Get_Skills())
+                 );
         }
-        public override object Clone()
+        public override ScriptObject Clone()
         {
             return new Entity(this);
+        }
+        public override bool Assign(Record copied)
+        {
+            return Copy((Entity)copied);
         }
 
         public bool Equip(Item item)
@@ -350,6 +404,7 @@ namespace RPG
         public bool Move(Direction direction)
         {
             Tile next = Position.Get_Neighbour(direction);
+            Set_Orientation(direction);
             if (next.Can_Move(Movement_Mode) && Speed.Get_Done() && next!=null)
             {
                 
@@ -425,7 +480,15 @@ namespace RPG
         {
             return Skills;
         }
-
+        public string Get_Details()
+        {
+            string returned = "";
+            foreach(Stat stat in Stats)
+            {
+                returned += stat.ToString() + Environment.NewLine;
+            }
+            return returned;
+        }
         public string Get_Stat_List()
         {
             string returned =
@@ -457,6 +520,50 @@ namespace RPG
         }
         public bool Set_Orientation(Direction direction)
         {
+            
+            if (Image != null)
+            {
+                switch (Orientation)
+                {
+                    case Direction.Up:
+                        switch (direction)
+                        {
+                            case Direction.Up: break;
+                            case Direction.Down:Image.RotateFlip(RotateFlipType.Rotate180FlipNone); break;
+                            case Direction.Left: Image.RotateFlip(RotateFlipType.Rotate270FlipNone); break;
+                            case Direction.Right: Image.RotateFlip(RotateFlipType.Rotate90FlipNone); break;
+                        }
+                        break;
+                    case Direction.Down:
+                        switch (direction)
+                        {
+                            case Direction.Up: Image.RotateFlip(RotateFlipType.Rotate180FlipNone); break;
+                            case Direction.Down: break;
+                            case Direction.Left: Image.RotateFlip(RotateFlipType.Rotate90FlipNone); break;
+                            case Direction.Right: Image.RotateFlip(RotateFlipType.Rotate270FlipNone); break;
+                        }
+                        break;
+                    case Direction.Left:
+                        switch (direction)
+                        {
+                            case Direction.Up: Image.RotateFlip(RotateFlipType.Rotate90FlipNone); break;
+                            case Direction.Down: Image.RotateFlip(RotateFlipType.Rotate270FlipNone); break;
+                            case Direction.Left: break;
+                            case Direction.Right: Image.RotateFlip(RotateFlipType.Rotate180FlipNone); break;
+                        }
+                        break;
+                    case Direction.Right:
+                        switch (direction)
+                        {
+                            case Direction.Up: Image.RotateFlip(RotateFlipType.Rotate270FlipNone); break;
+                            case Direction.Down: Image.RotateFlip(RotateFlipType.Rotate90FlipNone); break;
+                            case Direction.Left: Image.RotateFlip(RotateFlipType.Rotate180FlipNone); break;
+                            case Direction.Right: break;
+                        }
+                        break;
+                }
+            }
+
             Orientation = direction;
             return true;
         }
@@ -472,16 +579,41 @@ namespace RPG
         }
         public bool Set_Resources(List<Stat_Resource> resources )
         {
-            return Add_Stats_Resource(resources);
+            Resources = resources;
+            if (resources != null)
+            {
+                foreach(Stat_Resource added in resources)
+                {
+                    Stats.Add(added);
+                }
+            }
+            return true;
         }
         public bool Set_Regenerators(List<Stat_Regeneration> regenerators)
         {
 
-            return Add_Stats_Regeneration(regenerators);
+            Regenerators = regenerators;
+            if (regenerators != null)
+            {
+                foreach (Stat_Regeneration added in regenerators)
+                {
+                    Stats.Add(added);
+                    added.Bind(Resources);
+                }
+            }
+            return true;
         }
         public bool Set_Modifiers(List<Stat_Modifier> modifiers)
         {
-            return Add_Stats_Modifier(modifiers);
+            Modifiers = modifiers;
+            if (modifiers != null)
+            {
+                foreach (Stat_Modifier added in modifiers)
+                {
+                    Stats.Add(added);
+                }
+            }
+            return true;
 
         }
         public bool Set_Equipment(Dictionary<Slot,Item> equipment)
@@ -500,24 +632,6 @@ namespace RPG
             return true;
         }
 
-        public override string ToString(string tab)
-        {
-            string temp =
-            tab + base.ToString() +
-            tab + MyParser.Write(Sight, "Int", "Sight")+
-            tab + MyParser.Write(Speed, "Cooldown", "Speed")+
-            tab + MyParser.Write(Position, "Tile", "Position")+
-            tab + MyParser.Write(Image, "Image", "Image") +
-            tab + MyParser.Write(Orientation, "Direction", "Orientation")+
-            tab + MyParser.Write(Regenerators, "Array<Stat_Regeneration>", "Regenerators")+
-            tab + MyParser.Write(Modifiers, "Array<Stat_Modifier>", "Modifiers")+
-            tab + MyParser.Write(Resources, "Array<Stat_Resource>", "Resources") +
-            tab + MyParser.Write(Movement_Mode, "MovementMode", "Movement_Mode") +
-            tab + MyParser.Write(Skills, "Array<Skill>", "Skills") +
-            tab + MyParser.Write(Inventory, "Array<Item>", "Inventory") +
-            tab + MyParser.Write(Equipment, "Dictionary<Slot,Item>", "Equipment");
-            return temp;
-        }
         public override bool Set_Variable(string name, object value)
         {
             switch (name)
