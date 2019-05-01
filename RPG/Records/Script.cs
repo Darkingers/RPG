@@ -12,14 +12,14 @@ namespace RPG
     {
         protected IParseTree Tree;
         protected ScriptVisitor Visitor;
-        protected List<string> Arguments;
+        protected Dictionary<string, string> Arguments;
         protected string Return_Type;
 
         public Script()
         {
-            Copy(null, new ScriptVisitor(), new List<string>(),"INVALID");
+            Copy(null, new ScriptVisitor(), new Dictionary<string,string>(),"INVALID");
         }
-        public Script(Record type,IParseTree tree,ScriptVisitor visitor,List<string> arguments,string return_type) : base(type)
+        public Script(Record type,IParseTree tree,ScriptVisitor visitor,Dictionary<string,string> arguments,string return_type) : base(type)
         {
             Copy(tree,visitor,arguments,return_type);
         }
@@ -31,7 +31,7 @@ namespace RPG
         {
             return base.Copy(copied) && Copy(copied.Get_Tree(),copied.Get_Visitor(),copied.Get_Arguments(),copied.Get_Return_Type());
         }
-        public bool Copy(IParseTree tree,ScriptVisitor visitor,List<string> arguments,string return_type)
+        public bool Copy(IParseTree tree,ScriptVisitor visitor,Dictionary<string,string> arguments,string return_type)
         {
             return
             Set_Tree(tree) &&
@@ -68,7 +68,7 @@ namespace RPG
                 throw new Exception("Script: " + Get_Identifier() + ":Invalid arguments");
             }
 
-            Visitor.Add_Arguments(Arguments, args);
+            Visitor.Add_Arguments(Arguments.Keys.ToList(), args);
             return Visitor.Visit(Tree);
         }
 
@@ -82,7 +82,7 @@ namespace RPG
             Tree = tree;
             return true;
         }
-        public bool Set_Arguments(List<string> arguments)
+        public bool Set_Arguments(Dictionary<string,string> arguments)
         {
             Arguments = arguments;
             return true;
@@ -101,7 +101,7 @@ namespace RPG
         {
             return Tree;
         }
-        public List<string> Get_Arguments()
+        public Dictionary<string,string> Get_Arguments()
         {
             return Arguments;
         }
@@ -116,7 +116,7 @@ namespace RPG
             {
                 case "Tree": return Set_Tree((IParseTree)value);
                 case "Visitor": return Set_Visitor((ScriptVisitor)value);
-                case "Arguments": return Set_Arguments(MyParser.Convert_Array<string>(value));
+                case "Arguments": return Set_Arguments(Converter.Convert_Dictionary<string,string>(value));
                 case "Executed":return Set_Tree((IParseTree)value);
                 default: return base.Set_Variable(name, value);
             }

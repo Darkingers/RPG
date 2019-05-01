@@ -40,7 +40,7 @@ namespace RPG
             return Copy((Stat_Modifier)copied);
         }
 
-        public bool Send(External_Effect effect)
+        public bool Send(Effect effect)
         {
             List<Tag> tags = effect.Get_Sender_Tags();
             if (!Contains_Tags(tags))
@@ -50,11 +50,11 @@ namespace RPG
             else
             {
                 effect.Modify_Flat(Flat* (int)Intention);
-                effect.Modify_Percent((Percent/100)* (int)Intention);
+                effect.Modify_Percent((Percent)* (int)Intention);
                 return true;
             }
         }
-        public bool Recieve(External_Effect effect)
+        public bool Recieve(Effect effect)
         {
             List<Tag> tags = effect.Get_Reciever_Tags();
             if (!Contains_Tags(tags))
@@ -64,7 +64,7 @@ namespace RPG
             else
             {
                 effect.Modify_Flat(Flat*(int)Intention);
-                effect.Modify_Percent((Percent/100)* (int)Intention);
+                effect.Modify_Percent((Percent)* (int)Intention);
                 return true;
             }
         }
@@ -100,8 +100,8 @@ namespace RPG
         {
             switch (name)
             {
-                case "Send":return Send((External_Effect)args[0]);
-                case "Recieve":return Recieve((External_Effect)args[0]);
+                case "Send":return Send((Effect)args[0]);
+                case "Recieve":return Recieve((Effect)args[0]);
                 default: return base.Call_Function(name, args);
             }
         }

@@ -30,7 +30,9 @@ namespace RPG
             {"Item_Stat",new Item_Stat() },
             {"Cost_Value",new Cost_Value() },
             {"Cost",new Cost() },
-            {"Cooldown",new Cooldown() }
+            {"Cooldown",new Cooldown() },
+            {"Effect",new Effect() },
+            {"Trigger",new Trigger() }
         };
         protected ScriptObject Target =new ScriptObject();
         protected object Returned =null;
@@ -73,13 +75,21 @@ namespace RPG
 
         public override object VisitFile([NotNull] GrammarParser.FileContext context)
         {
-            for(int i = 0; i < context.@object().Length; i++)
+            
+            for(int i = 0; i < context.script().Length; i++)
             {
-                string type = context.@object(i).typeName().GetText();
-                Record added=(Record)Visit(context.@object(i));
-                
+                System.Console.WriteLine(context.script(i).functionName().GetText() + " Errors:");
+                Record added = (Script)Visit(context.script(i));
                 added.Set_Source(Source);
                 System.Console.WriteLine(added.Get_Identifier());
+                Database.Add_Record(added);
+            }
+            for (int i = 0; i < context.@object().Length; i++)
+            {
+                System.Console.WriteLine(context.@object(i).typeName().GetText() + " Errors:");
+                Record added = (Record)Visit(context.@object(i));
+                added.Set_Source(Source);
+                System.Console.WriteLine( added.Get_Identifier());
                 Database.Add_Record(added);
             }
             return null;
@@ -97,23 +107,40 @@ namespace RPG
             
             return returned;
         }
+        public override object VisitScript([NotNull] GrammarParser.ScriptContext context)
+        {
+            Script returned = new Script();
+            returned.Set_Return_Type(context.typeName(0).GetText());
+            returned.Set_Name(context.functionName().GetText());
+            Dictionary<string, string> arguments = new Dictionary<string, string>();
+            for(int i = 1; i < context.typeName().Length; i++)
+            {
+                arguments.Add(context.varName(i-1).GetText(),context.typeName(i).GetText());
+            }
+            returned.Set_Arguments(arguments);
+            returned.Set_Tree(context.block());
+            return returned;
+        }
         public override object VisitCondition([NotNull] GrammarParser.ConditionContext context)
         {
-            ScriptObject left = (ScriptObject)Visit(context.simpleExpression(0));
-            ScriptObject right = (ScriptObject)Visit(context.simpleExpression(1));
-
+            object left = Visit(context.simpleExpression(0));
+            object right = Visit(context.simpleExpression(1));
             switch (context.comparator().GetText())
             {
-                case "<": return ((left.Compare(right)) < 0);
-                case ">": return ((left.Compare(right)) > 0);
-                case "<=": return ((left.Compare(right)) <= 0);
-                case ">=": return ((left.Compare(right)) >= 0);
-                case "==": return ((left.Compare(right)) == 0);
-                case "!=": return ((left.Compare(right)) != 0);
+                case "<": return (double)left < (double)right;
+                case ">": return (double)left > (double)right;
+                case "<=": return (double)left <= (double)right;
+                case ">=": return (double)left >= (double)right;
+                case "==":
+                    if (left != null) return left.Equals(right);
+                    else if (right != null) return right.Equals(left);
+                    else return true;
+                case "!=":
+                    if (left != null) return !left.Equals(right);
+                    else if (right != null) return !right.Equals(left);
+                    else return false;
                 default:
-                    throw new Exception("ScriptVisitor:VisitCondition:Invalid comparator: " + context.comparator
-
-().GetText());
+                    throw new Exception("ScriptVisitor:VisitCondition:Invalid comparator: " + context.comparator().GetText());
             }
         }
         public override object VisitBlock([NotNull] GrammarParser.BlockContext context)
@@ -171,28 +198,44 @@ namespace RPG
         }
         public override object VisitFunctionStatement([NotNull] GrammarParser.FunctionStatementContext context)
         {
-            object returned = null;
-            if (context.varName() != null)
+            if (context.localFunction() != null)
             {
-                returned = Get_Variable(context.varName().GetText());
-                for (int i = 0; i < context.functionName().Length; i++)
-                {
-                    object[] args = (object[])VisitArguments(context.arguments(i));
-                    returned = ((ScriptObject)returned).Call_Function(context.functionName(i).GetText(), args);
-                }
+                return Visit(context.localFunction());
             }
-            else
+            else if (context.globalFunction() != null)
             {
-                object[] args = (object[])VisitArguments(context.arguments(0));
-                returned = ((Script)Database.Get(context.functionName(0).GetText())).Execute(args);
-                for (int i = 1; i < context.functionName().Length; i++)
-                {
-                    args = (object[])VisitArguments(context.arguments(i));
-                    returned = ((ScriptObject)returned).Call_Function(context.functionName(i).GetText(), args);
-                }
+                return Visit(context.globalFunction());
+            }
+            else return null;
+        }
+        public override object VisitLocalFunction([NotNull] GrammarParser.LocalFunctionContext context)
+        {
+            object lastreturn = Get_Variable(context.varName().GetText());
+            for(int i = 0; i < context.functionName().Length; i++)
+            {
+                ScriptObject temp = (ScriptObject)lastreturn;
+                string name = context.functionName(i).GetText();
+                object[] arguments = (object[])Visit(context.arguments(i));
+                System.Console.WriteLine("In function: " +name);
+                lastreturn =temp.Call_Function(name,arguments );
+            }
+            return lastreturn;
+        }
+        public override object VisitGlobalFunction([NotNull] GrammarParser.GlobalFunctionContext context)
+        {
+            object lastreturn= Global_Functions.Call_Function(
+                context.functionName(0).GetText(),
+                (object[]) Visit(context.arguments(0))
+                );
+            for(int i = 1; i < context.functionName().Length; i++)
+            {
 
+                lastreturn = ((ScriptObject)lastreturn).Call_Function(
+                    context.functionName(i).GetText(),
+                    (object[])Visit(context.arguments(i))
+                    );
             }
-            return returned;
+            return lastreturn;
         }
         public override object VisitIfStatement([NotNull] GrammarParser.IfStatementContext context)
         {
@@ -208,7 +251,11 @@ namespace RPG
                     return true;
                 }
             }
-            return Visit(context.elseStatement());
+            if (context.elseStatement() != null)
+            {
+                return Visit(context.elseStatement());
+            }
+            else return null; 
         }
         public override object VisitElseifStatement([NotNull] GrammarParser.ElseifStatementContext context)
         {
@@ -279,10 +326,6 @@ namespace RPG
         }
         public override object VisitSimpleExpression([NotNull] GrammarParser.SimpleExpressionContext context)
         {
-            if (relevant_type == "Array<Stat_Resource>")
-            {
-                
-            }
 
             if (context.varName() != null)
             {
@@ -300,6 +343,10 @@ namespace RPG
                     returned.Add(Visit(context.array().expression(i)));
                 }
                 return returned;
+            }
+            else if (context.enumerator() != null)
+            {
+                return Visit(context.enumerator());
             }
             else if (context.grid() != null)
             {
@@ -337,6 +384,8 @@ namespace RPG
             else if (context.POINT() != null)
             {
                 string[] parsed = context.POINT().GetText().Split(':');
+                parsed[0] = parsed[0].Remove(0, 1);
+                parsed[1] = parsed[1].Remove(parsed[1].Length - 1, 1);
                 return new Point(int.Parse(parsed[0]), int.Parse(parsed[1]));
             }
             else if (context.DOUBLE() != null)
@@ -373,6 +422,24 @@ namespace RPG
                 args.Add(Visit(context.expression(i)));
             }
             return args.ToArray();
+        }
+        public override object VisitEnumerator([NotNull] GrammarParser.EnumeratorContext context)
+        {
+            switch (context.ID().GetText())
+            {
+                case "Current":return Number.Current;
+                case "Fly": return MovementMode.Fly;
+                case "Walk": return MovementMode.Walk;
+                case "Phase": return MovementMode.Phase;
+                case "Decrease": return Modifier.Decrease;
+                case "Increase": return Modifier.Increase;
+                case "Flat": return Number.Flat;
+                case "Percent": return Number.Percent;
+                case "More": return Relation.More;
+                case "Equal": return Relation.Equal;
+                case "Less": return Relation.Less;
+                default:return null;
+            }
         }
     }
 }

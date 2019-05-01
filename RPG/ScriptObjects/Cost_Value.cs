@@ -47,7 +47,7 @@ namespace RPG
         public bool Can_Pay(Stat_Resource resource)
         {
             double max = resource.Get_Max();
-            if (resource.Get_Current() >= max * Percent_Cost + Flat_Cost)
+            if (resource.Get_Current() >= max * (Percent_Cost/100) + Flat_Cost)
             {
                 return true;
             }
@@ -56,7 +56,7 @@ namespace RPG
         public bool Pay(Stat_Resource resource)
         {
             double max = resource.Get_Max();
-            return resource.Modify_Current(-Flat_Cost + -Percent_Cost * max);
+            return resource.Modify_Current(-Flat_Cost + -(Percent_Cost/100) * max);
         }
         public bool Try_Pay(Stat_Resource resource)
         {
@@ -124,8 +124,8 @@ namespace RPG
             switch (name)
             {
                 case "Target": return Set_Target((Stat_Resource)value);
-                case "Flat_Cost": return Set_Flat_Cost((double) value);
-                case "Percent_Cost":return Set_Percent_Cost((double)value);
+                case "Flat": return Set_Flat_Cost((double) value);
+                case "Percent":return Set_Percent_Cost((double)value);
                 default: return base.Set_Variable(name, value);
             }
         }
@@ -134,8 +134,8 @@ namespace RPG
             switch (name)
             {
                 case "Target":return Get_Target();
-                case "Flat_Cost":return Get_Flat_Cost();
-                case "Percent_Cost":return Get_Percent_Cost();
+                case "Flat":return Get_Flat_Cost();
+                case "Percent":return Get_Percent_Cost();
                 default: return base.Get_Variable(name);
             }
         }

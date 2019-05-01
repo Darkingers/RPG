@@ -57,7 +57,7 @@
     <Compile Include="ScriptObjects\Cost_Value.cs" />
     <Compile Include="Records\Database.cs" />
     <Compile Include="Records\Entity.cs" />
-    <Compile Include="ScriptObjects\External_Effect.cs" />
+    <Compile Include="ScriptObjects\Effect.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +84,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Records\Script.cs" />
+    <Compile Include="ScriptObjects\Global_Functions.cs" />
     <Compile Include="ScriptObjects\ScriptObject.cs" />
     <Compile Include="ScriptObjects\ScriptVisitor.cs" />
     <Compile Include="Records\Skill.cs" />

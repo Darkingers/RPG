@@ -5,7 +5,7 @@ Map{
 	Array<Tag> Tags={
 		Base:Map
 		};
-	Point Starting_Position=11:4;
+	Point Starting_Position=[1:1];
 	Dictionary<Int,Tile> Replacer={
 		0@Base:Wall,
 		1@Base:Grass,
@@ -20,5 +20,6 @@ Map{
 	{2,2,0,2,1,1,1,3,3,1,1,1,1,0},
 	{2,2,2,2,1,1,1,3,3,1,1,1,1,0},
 	{2,2,2,2,0,0,0,3,3,0,0,0,0,0}
-};
+	};
+	Dictionary<Point,Entity> Entities={[4:3]@Base:Skeleton};
 }

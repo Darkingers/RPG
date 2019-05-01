@@ -108,11 +108,22 @@ namespace RPG
 
         public bool Equals(Record compared)
         {
-            return (Get_Identifier() == compared.Get_Identifier());
+            if (compared == null)
+            {
+                return false;
+            }
+            else
+            {
+                return (Get_Identifier() == compared.Get_Identifier());
+            }
         }
         public bool Equals(string identifier)
         {
             return (Get_Identifier() == identifier);
+        }
+        public override bool Equals(object obj)
+        {
+            return Equals((Record)obj);
         }
 
         public Mod Get_Source()
@@ -168,7 +179,7 @@ namespace RPG
                 case "Source":return Set_Source((Mod)value);
                 case "Name": return Set_Name((string)value);
                 case "Description": return Set_Description((string)value);
-                case "Tags": return Set_Tags(MyParser.Convert_Array<Tag>(value));
+                case "Tags": return Set_Tags(Converter.Convert_Array<Tag>(value));
                 case "this":return Assign((Record)value);
                 default:return base.Set_Variable(name, value);
             }

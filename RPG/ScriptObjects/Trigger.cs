@@ -7,37 +7,44 @@ using System.Threading.Tasks;
 namespace RPG
 {
     enum Relation { More='>', Less='<', Equal='='};
-    enum Numeral { Integer, Double ='%'};
 
     class Trigger:ScriptObject
     {
-        protected double Threshold;//Contains
-        protected Relation Relation;//Contains
-        protected Numeral Numeral;//Contains
-        protected List<Skill> Skills;//Contains
+        protected double Threshold;
+        protected Relation Relation;
+        protected Number Numeral;
+        protected List<Skill> Skills;
+        protected List<Script> Scripts;
 
         public Trigger()
         {
-            Copy(0, Relation.Less, Numeral.Double, new List<Skill>());
+            Copy(0, Relation.Less, Number.Percent, new List<Skill>(),new List<Script>());
         }
-        public Trigger(ScriptObject scriptobject,double threshold,Relation relation,Numeral numeral,List<Skill> skills):base(scriptobject)
+        public Trigger(ScriptObject scriptobject, double threshold,Relation relation,Number numeral,List<Skill> skills,List<Script> scripts):base(scriptobject)
         {
-            Copy(threshold, relation, numeral, skills);
+            Copy(threshold, relation, numeral, skills,scripts);
         }
         public Trigger(Trigger cloned)
         {
             Copy(cloned);
         }
-        public bool Copy(double threshold, Relation relation, Numeral numeral , List<Skill> skills)
+        public bool Copy(double threshold, Relation relation, Number numeral , List<Skill> skills,List<Script> scripts)
         {
             return Set_Threshold(threshold) &&
             Set_Relation(relation) &&
             Set_Numeral(numeral) &&
-            Set_Skills(skills);
+            Set_Skills(skills) &&
+            Set_Scripts(scripts);
         }
         public bool Copy(Trigger copied)
         {
-            return base.Copy(copied) && Copy(copied.Get_Threshold(), copied.Get_Relation(), copied.Get_Numeral(), new List<Skill>(copied.Get_Skills())) ;
+            return base.Copy(copied) && Copy(
+                copied.Get_Threshold(), 
+                copied.Get_Relation(), 
+                copied.Get_Numeral(),
+                copied.Get_Skills()==null?null:new List<Skill>(copied.Get_Skills()),
+                copied.Get_Scripts()==null?null:new List<Script>(copied.Get_Scripts())
+                ) ;
         }
         public override ScriptObject Clone()
         {
@@ -92,10 +99,15 @@ namespace RPG
         {
             foreach (Skill iter in Skills)
             {
-                if (iter.Can_Use(source, source))
+                if (iter.Can_Use(source, source.Get_Tile()))
                 {
-                    iter.Use(source, source);
+                    iter.Use(source, source.Get_Tile());
                 }
+            }
+            foreach(Script script in Scripts)
+            {
+                object[] args = { source };
+                script.Execute(args);
             }
             return true;
         }
@@ -104,8 +116,8 @@ namespace RPG
             double actual_value = -1;
             switch (Numeral)
             {
-                case Numeral.Integer: actual_value = value_as_int; break;
-                case Numeral.Double: actual_value = value_as_percent; break;
+                case Number.Flat: actual_value = value_as_int; break;
+                case Number.Percent: actual_value = value_as_percent; break;
             }
             switch (Relation)
             {
@@ -131,20 +143,25 @@ namespace RPG
             return false;
 
         }
-        public bool Try_Trigger(double value_as_int, double value_as_percent, Entity source)
+        public bool Try_Trigger(double value_as_int, double value_as_double, Entity source)
         {
-            if (!Can_Trigger(value_as_int, value_as_percent, source))
+
+            if (!Can_Trigger(value_as_int, value_as_double, source))
             {
                 return false;
             }
+            foreach (Script script in Scripts)
+            {
+                object[] args = { source };
+                script.Execute(args);
+            }
             foreach (Skill iter in Skills)
             {
-                if (iter.Can_Use(source,source))
+                if (iter.Can_Use(source,source.Get_Tile()))
                 {
-                    iter.Use(source, source);
+                    iter.Use(source, source.Get_Tile());
                 }
-            }
-            return true;
+            }            return true;
         }
 
         public double Get_Threshold()
@@ -155,13 +172,17 @@ namespace RPG
         {
             return Relation;
         }
-        public Numeral Get_Numeral()
+        public Number Get_Numeral()
         {
             return Numeral;
         }
         public List<Skill> Get_Skills()
         {
             return Skills;
+        }
+        public List<Script> Get_Scripts()
+        {
+            return Scripts;
         }
 
         public bool Set_Threshold(double threshold)
@@ -179,7 +200,7 @@ namespace RPG
             Relation = relation;
             return true;
         }
-        public bool Set_Numeral(Numeral type)
+        public bool Set_Numeral(Number type)
         {
             Numeral = type;
             return true;
@@ -187,6 +208,11 @@ namespace RPG
         public bool Set_Skills(List<Skill> skills)
         {
             Skills = skills;
+            return true;
+        }
+        public bool Set_Scripts(List<Script> scripts)
+        {
+            Scripts = scripts;
             return true;
         }
 
@@ -205,8 +231,9 @@ namespace RPG
             {
                 case "Threshold":return Set_Threshold((double)value);
                 case "Relation":return Set_Relation((Relation)value);
-                case "Numeral":return Set_Numeral((Numeral)value);
-                case "Skills":return Set_Skills((List<Skill>)value);
+                case "Numeral":return Set_Numeral((Number)value);
+                case "Skills":return Set_Skills((Converter.Convert_Array<Skill>(value)));
+                case "Scripts":return Set_Scripts(Converter.Convert_Array<Script>(value));
                 default:return base.Set_Variable(name, value);
             }
         }
@@ -227,6 +254,7 @@ namespace RPG
                 case "Numeral":return Get_Numeral();
                 case "Relation": return Get_Relation();
                 case "Skills":return Get_Skills();
+                case "Scripts":return Get_Scripts();
                 default:return base.Get_Variable(name);
             }
         }

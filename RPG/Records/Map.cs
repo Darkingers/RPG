@@ -75,12 +75,12 @@ namespace RPG
             }
             return true;
         }
-        public void Draw(Graphics scene,int FrameWidth,int FrameHeight,int Width,int Height,Entity observer)
+        public Dictionary<Rectangle,Tile> RenderMap(Graphics scene,int FrameWidth,int FrameHeight,int Width,int Height,Entity observer)
         {
             int Sight;
             int XPos;
             int YPos;
-            if (observer == null)
+            if (observer==null || observer.Get_Tile()==null)
             {
                 Sight = Math.Min(Tiles.Count, Tiles[0].Count);
                 Sight=Sight % 2 == 0 ?Sight / 2 - 1 : Sight / 2;
@@ -148,6 +148,7 @@ namespace RPG
             }
 
             Rectangle rect = new Rectangle(0, 0, TileWidth, TileHeight);
+            Dictionary<Rectangle, Tile> returned = new Dictionary<Rectangle, Tile>();
             for (int i = rfrom,y=0; i <= rto; i++,y++)
             {
                 rect.Y = TileHeight * y+Yoffset;
@@ -155,8 +156,10 @@ namespace RPG
                 {
                     rect.X = TileWidth * x+Xoffset;
                     Tiles[i][j].Draw(scene,rect);
+                    returned.Add(new Rectangle(rect.X,rect.Y,rect.Width,rect.Height), Tiles[i][j]);
                 }
             }
+            return returned;
         }
 
         public bool Set_Starting_Position(Point start)
@@ -192,7 +195,14 @@ namespace RPG
             Replacer = replacer;
             return true;
         }
-
+        public bool Set_Entities(Dictionary<Point,Entity> entities) {
+            List<Point> points = entities.Keys.ToList();
+            foreach (Point p in points)
+            {
+                Tiles[p.Y][p.X].Spawn(entities[p]);
+            }
+            return true;
+        }
         public Dictionary<int,Tile> Get_Replacer()
         {
             return Replacer;
@@ -214,9 +224,10 @@ namespace RPG
         {
             switch (name)
             {
-                case "Tiles": return Set_Tiles(MyParser.Convert_Grid<int>(value));
+                case "Tiles": return Set_Tiles(Converter.Convert_Grid<int>(value));
                 case "Starting_Position": return Set_Starting_Position((Point)value);
-                case "Replacer": return Set_Replacer(MyParser.Convert_Dictionary<int,Tile>(value));
+                case "Replacer": return Set_Replacer(Converter.Convert_Dictionary<int,Tile>(value));
+                case "Entities":return Set_Entities(Converter.Convert_Dictionary<Point, Entity>(value));
                 default: return base.Set_Variable(name, value);
             }
         }
@@ -224,7 +235,6 @@ namespace RPG
         {
             switch (name)
             {
-                case "Tiles": return Tiles;
                 case "Starting_Position": return Starting_Position;
                 case "Replacer":return Replacer;
                 default: return base.Get_Variable(name);
@@ -236,6 +246,7 @@ namespace RPG
             {
                 case "Add_Player": return Add_Player((Player)args[0]);
                 case "Link": return Link();
+                case "Get_Tile":return Get_Tile((int)args[0], (int)args[1]);
                 default: return base.Call_Function(name, args);
             }
         }

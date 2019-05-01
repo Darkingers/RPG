@@ -84,7 +84,7 @@ namespace RPG
 
 
         }
-        public bool Try_Trigger(Entity source)
+        public override bool Try_Trigger(Entity source)
         {
             bool returned = false;
             foreach (Trigger trigger in Triggers)
@@ -127,11 +127,6 @@ namespace RPG
                 Current = Max;
                 return false;
             }
-            else if (Current < 0)
-            {
-                Current = 0;
-                return false;
-            }
             else return true;
         }
         public bool Set_Triggers(List<Trigger> triggers)
@@ -149,7 +144,7 @@ namespace RPG
             switch (name)
             {
                 case "Current": return Set_Current((double)value);
-                case "Triggers":return Set_Triggers((List<Trigger>)value);
+                case "Triggers":return Set_Triggers(Converter.Convert_Array<Trigger>(value));
                 default: return base.Set_Variable(name, value);
             }
         }

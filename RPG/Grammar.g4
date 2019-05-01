@@ -4,8 +4,9 @@ grammar Grammar;
  * Parser Rules
  */
  
-file				:object*;
+file				:(object | script)*;
 object				:typeName block;
+script				:typeName functionName BRACKET1 (typeName varName)?(PUNC typeName varName)* BRACKET2 block;
 block				: CURLY1 statementList CURLY2 ;
 statementList		:statement*;
 
@@ -13,8 +14,6 @@ statement
 		:
 		variableDeclaration
 		| ifStatement	
-		| elseifStatement
-		| elseStatement
 		| whileStatement
 		| forStatement
 		| assignmentStatement
@@ -22,13 +21,16 @@ statement
 		;
 
 variableDeclaration : SCOPE? typeName varName (EQUALS expression)? SEMI;
-whileStatement		: WHILE BRACKET1 condition BRACKET2  block;
-ifStatement			: IF BRACKET1 condition BRACKET2  (block)(elseifStatement* elseStatement)?;
-elseifStatement		: ELSEIF BRACKET1 condition BRACKET2  ( block);
-elseStatement		: ELSE BRACKET1 condition BRACKET2  (block);
-forStatement		: FOR BRACKET1 assignmentStatement? SEMI condition SEMI assignmentStatement? BRACKET2 (block);
 assignmentStatement	: varName EQUALS expression SEMI;
-functionStatement	: (varName DOT)? functionName arguments(DOT functionName arguments)*  SEMI;
+whileStatement		: WHILE condition  block;
+ifStatement			: IF condition  block (elseifStatement* elseStatement)?;
+elseifStatement		: ELSEIF condition  block;
+elseStatement		: ELSE block;
+forStatement		: FOR BRACKET1 assignmentStatement? SEMI condition SEMI assignmentStatement? BRACKET2 block;
+functionStatement	: localFunction | globalFunction;
+
+globalFunction		: functionName arguments (DOT functionName arguments)* SEMI;
+localFunction		: varName DOT functionName arguments(DOT functionName arguments)* SEMI;
 
 varName			    : ID;
 typeName            : ID('<'typeName(','typeName)*'>')?;
@@ -37,14 +39,15 @@ dictionary		    : CURLY1((expression'@'expression)(','expression'@'expression)*)
 grid				: CURLY1 array* CURLY2;
 array				: CURLY1((expression)(','(expression))*)?CURLY2;
 
-
-arguments			:  BRACKET1(expression (PUNC expression)*)? BRACKET2;
-condition			: (simpleExpression) comparator (simpleExpression);
+condition			: BRACKET1 simpleExpression comparator simpleExpression BRACKET2;
+arguments			: BRACKET1 (expression (PUNC expression)*)? BRACKET2;
 comparator			:  LT | GT | LTE | GTE | EQ | NEQ;
+operator			: PLUST | MINUS | MULT | DIV | POWER;
+enumerator			: '[' ID ']';
+
 expression			: simpleExpression (operator simpleExpression)*;
 simpleExpression	
 					:
-					
 					object
 					| functionStatement
 					| array
@@ -52,6 +55,7 @@ simpleExpression
 					| block
 					| dictionary
 					| grid
+					| enumerator
 					| (BOOLEAN
 					| NULL
 					| DOUBLE
@@ -64,9 +68,6 @@ simpleExpression
 					;
 
 
-
-operator: PLUST | MINUS | MULT | DIV | POWER;
-
 /*
  * Lexer Rules
  */
@@ -77,6 +78,7 @@ MULT	: '*';
 DIV		: '/';
 POWER	: '^';
 
+
 LT		: '<';
 GT		: '>';
 LTE		: '<=';
@@ -84,7 +86,7 @@ GTE		: '>=';
 EQ		: '==';
 NEQ		: '!=';
 
-ID		: [a-zA-Z][a-zA-Z0-9_]*;
+
 
 PUNC	: ',';
 SEMI	: ';';
@@ -100,13 +102,13 @@ CURLY2	: '}';
 BRACKET1: '(';
 BRACKET2: ')';
 DOT		: '.';
-NULL	: 'null';
+NULL	: 'null' |'NULL';
 BOOLEAN	: 'true' | 'false';
 STRING	: '"'(~[\r\n])*'"';
-SCRIPT	: '['(~[\r\n])*']';
-POINT	: [0-9]+':'[0-9]+;
+POINT	: '['[0-9]+':'[0-9]+']';
 REFERENCE:[a-zA-Z][a-zA-Z0-9_]*':'[a-zA-Z][a-zA-Z0-9_]*;
 DOUBLE  : [0-9]+'.'[0-9]+;
 INT     : [0-9]+;
+ID		: [a-zA-Z][a-zA-Z0-9_]*;
 
 WS		: (' '| '\t' | '\n' | '\r') -> skip;

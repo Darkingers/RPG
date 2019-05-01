@@ -1,6 +1,10 @@
 
 Slot{
-	String Name="Grip";
+	String Name="Left_Hand";
+}
+
+Slot{
+	String Name="Right_Hand";
 }
 Slot{
 	String Name="Shoulders";

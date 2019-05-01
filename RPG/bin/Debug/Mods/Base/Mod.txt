@@ -9,7 +9,7 @@ Mod{
 		"Stats",
 		"Skills",
 		"Items",
-		"Maps",
-		"Entities"
+		"Entities",
+		"Maps"
 	};
 }

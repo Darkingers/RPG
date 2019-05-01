@@ -126,34 +126,83 @@ namespace RPG
         {
             return Copy((Entity)copied);
         }
+        public void RenderItems(Graphics e, int Framewidth, int Frameheight, int width, int height, Entity observer)
+        {
+            Region region = new Region(new Rectangle(Framewidth,Frameheight,width-2*Framewidth,height-2*Frameheight));
+            SolidBrush brush = new SolidBrush(Color.FromArgb(158,114,84));
+            e.FillRegion(brush, region);
+
+
+            
+        }
+        public void RenderInventory()
+        {
+           
+        }
+        public void RenderEquipment()
+        {
+            
+        }
 
         public bool Equip(Item item)
         {
-            Inventory.Remove(item);
-            Item switched = Equipment[item.Get_Slot()];
+            if (item != null)
+            {
+                Inventory.Remove(item);
+                Item switched = Equipment[item.Get_Slot()];
 
-            if (switched != null)
-            {
-                UnEquip(switched);
-                Inventory.Add(switched);
+                if (switched != null)
+                {
+                    UnEquip(switched);
+                    Inventory.Add(switched);
+                }
+                Equipment[item.Get_Slot()] = item;
+                foreach (Stat stat in Stats)
+                {
+                    item.Apply(stat);
+                }
+                foreach (Skill skill in item.Get_Skills())
+                {
+                   Add_Skill(skill);
+                }
+                return true;
             }
-            Equipment[item.Get_Slot()] = item;
-            foreach(Stat stat in Stats)
+            else
             {
-                item.Apply(stat);
+                return false;
             }
-            return true;
         }
         public bool UnEquip(Item item)
         {
-            Equipment[item.Get_Slot()] = null;
-            foreach(Stat stat in Stats)
+            if (item != null)
             {
-                item.Remove(stat);
+                Equipment[item.Get_Slot()] = null;
+                foreach (Stat stat in Stats)
+                {
+                    item.Remove(stat);
+                }
+                foreach (Skill skill in item.Get_Skills())
+                {
+                    Remove_Skill(skill);
+                }
+                return true;
             }
-            return true;
+            else
+            {
+                return false;
+            }
         }
-
+        
+        public bool Kill()
+        {
+            if (Position != null)
+            {
+                Position.Leave();
+                Position = null;
+                return true;
+            }
+            else return false;
+        }
         public bool Calculate_Stats()
         {
             List<Item> items = Equipment.Values.ToList();
@@ -381,7 +430,7 @@ namespace RPG
             return returned;
         }
 
-        public External_Effect Send(External_Effect effect)
+        public Effect Send(Effect effect)
         {
             foreach(Stat_Modifier modifier in Modifiers)
             {
@@ -389,7 +438,7 @@ namespace RPG
             }
             return effect;
         }
-        public bool Recieve(External_Effect effect)
+        public bool Recieve(Effect effect)
         {
             foreach (Stat_Modifier modifier in Modifiers)
             {
@@ -397,7 +446,10 @@ namespace RPG
             }
             foreach (Stat stat in Stats)
             {
-                effect.Apply(stat);
+                if (effect.Apply(stat))
+                {
+                    stat.Try_Trigger(this);
+                }
             }
             return true;
         }
@@ -482,7 +534,7 @@ namespace RPG
         }
         public string Get_Details()
         {
-            string returned = "";
+            string returned = Name+Environment.NewLine+Description+Environment.NewLine;
             foreach(Stat stat in Stats)
             {
                 returned += stat.ToString() + Environment.NewLine;
@@ -638,16 +690,16 @@ namespace RPG
             {
                 case "Sight": return Set_Sight((int)value);
                 case "Image":return Set_Image((Bitmap)value);
-                case "Regenerators":return Set_Regenerators(MyParser.Convert_Array<Stat_Regeneration>(value));
-                case "Resources": return Set_Resources(MyParser.Convert_Array<Stat_Resource>(value));
-                case "Modifiers": return Set_Modifiers(MyParser.Convert_Array<Stat_Modifier>(value));
+                case "Regenerators":return Set_Regenerators(Converter.Convert_Array<Stat_Regeneration>(value));
+                case "Resources": return Set_Resources(Converter.Convert_Array<Stat_Resource>(value));
+                case "Modifiers": return Set_Modifiers(Converter.Convert_Array<Stat_Modifier>(value));
                 case "Position":return Set_Position((Tile)value);
                 case "Speed":return Set_Speed((Cooldown)value);
                 case "Orientation":return Set_Orientation((Direction)value);
                 case "Movement_Mode":return Set_Movement_Mode((MovementMode)value);
-                case "Skills":return Set_Skills(MyParser.Convert_Array<Skill>(value));
-                case "Equipment":return Set_Equipment(MyParser.Convert_Dictionary<Slot, Item>(value));
-                case "Inventory":return Set_Inventory(MyParser.Convert_Array<Item>(value));
+                case "Skills":return Set_Skills(Converter.Convert_Array<Skill>(value));
+                case "Equipment":return Set_Equipment(Converter.Convert_Dictionary<Slot, Item>(value));
+                case "Inventory":return Set_Inventory(Converter.Convert_Array<Item>(value));
                 default: return base.Set_Variable(name, value);
             }
         }
@@ -665,6 +717,7 @@ namespace RPG
                 case "Equipment":return Get_Equipment();
                 case "Iventory":return Get_Inventory();
                 case "Skills":return Get_Skills();
+                case "Tile": return Get_Tile();
                 case "Orientation":return Get_Orientation();
                 case "Movement_Mode":return Get_Movement_Mode();
                 default: return base.Get_Variable(name);
@@ -682,6 +735,7 @@ namespace RPG
                 case "Remove_Item": return Remove_Item((Item)args[0]);
                 case "Remove_Items": return Remove_Items((List<Item>)args[0]);
                 case "Add_Skill":return Add_Skill((Skill)args[0]);
+                case "Kill":return Kill();
                 case "Add_Skills":return Add_Skills((List<Skill>)args[0]);
                 case "Remove_Skill":return Remove_Skill((Skill)args[0]);
                 case "Remove_Skills":return Remove_Skills((List<Skill>)args[0]);
@@ -697,8 +751,8 @@ namespace RPG
                 case "Remove_Stats_Modifier": return Remove_Stats_Modifier((List<Stat_Modifier>)args[0]);
                 case "Remove_Stats_Regeneration": return Remove_Stats_Regeneration((List<Stat_Regeneration>)args[0]);
                 case "Remove_Stats_Resource": return Remove_Stats_Resource((List<Stat_Resource>)args[0]);
-                case "Send":return Send((External_Effect)args[0]);
-                case "Recieve":return Recieve((External_Effect)args[0]);
+                case "Send":return Send((Effect)args[0]);
+                case "Recieve":return Recieve((Effect)args[0]);
                 case "Move":return Move((Direction)args[0]);
                 case "Drop_Loot":return Drop_Loot();
                 

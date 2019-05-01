@@ -21,7 +21,6 @@ namespace RPG
         {
             Lock = new Semaphore(1, 1);
             Copy(0, 0, null);
-
         }
         public Cooldown(ScriptObject scriptobject, double time, double time_left, Func<object, object> endfunction) : base(scriptobject)
         {

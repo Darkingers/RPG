@@ -4,8 +4,8 @@ Player{
 	String Description="Player champ";
 	Array<Tag> Tags={Base:Player,Base:Entity};
 	Image Image=Base:Player_Image;
-	Array<Item> Inventory={Base:Basic_Shield};
-	Dictionary<Slot,Item> Equipment={Base:Grip@Base:Basic_Shield};
+	Array<Item> Inventory={Base:Basic_Shield,Base:Basic_Sword,Base:Juggernaut};
+	Array<Skill> Skills={Base:Teleportation,Base:Swap};
     
 	Int Sight = 4;
 	Cooldown Speed = Cooldown{
@@ -31,12 +31,12 @@ Player{
 		Stat_Modifier{
 		this=Base:Physical_Damage;
 		Double Flat=50.0; 
-		Double Percent=25.0;
+		Double Percent=100.0;
 		},
 		Stat_Modifier{
 		this=Base:Armour;
-		Double Flat=20.0;
-		Double Percent=20.0;
+		Double Flat=0.0;
+		Double Percent=50.0;
 		}
     	};
     	Array<Stat_Regeneration> Regenerators={

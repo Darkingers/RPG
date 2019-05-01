@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace RPG
@@ -15,6 +16,7 @@ namespace RPG
         protected Bitmap Image; 
         protected Entity Entity;
         protected Point Position;
+        protected bool Selected=false;
         protected List<MovementMode> Travel_Modes;
         Dictionary<Direction, Tile> Neighbours;
 
@@ -31,7 +33,7 @@ namespace RPG
                 new List<Script>(),
                 new List<Script>(),
                 new List<Script>(),
-                new Dictionary<Direction, Tile>(), 
+                new Dictionary<Direction, Tile>() { { Direction.Left, null }, { Direction.Right, null }, { Direction.Up, null }, { Direction.Down, null } }, 
                 new List<MovementMode>()
                 );
         }
@@ -42,6 +44,7 @@ namespace RPG
         public Tile(Tile cloned)
         {
             Copy(cloned);
+
         }
         public bool Copy(Tile copied)
         {
@@ -110,18 +113,17 @@ namespace RPG
             Entity = null;
             return true;
         }
-        public bool Tick()
+        public void Tick(System.Object sender, ElapsedEventArgs e)
         {
             if (Entity == null)
             {
-                return false;
+                return;
             }
             foreach (Script script in On_Tick)
             {
                 object[] args = { Entity };
                 script.Execute(args);
             }
-            return true;
         }
         public bool Spawn(Entity entity)
         {
@@ -132,6 +134,7 @@ namespace RPG
             else
             {
                 Enter((Entity)entity.Clone());
+
                 return true;
             }
             
@@ -144,8 +147,14 @@ namespace RPG
             {
                 scene.DrawImage(Entity.Get_Image(), dest);
             }
+            if (Selected)
+            {
+                dest.Width -= 4;
+                dest.Height -= 4;
+                scene.DrawRectangle(new Pen(new SolidBrush(Color.Black), 5), dest);
+            }
+            
         }
-
         public bool Can_Move(MovementMode mode)
         {
             return (Travel_Modes.Contains(mode) && Entity == null);
@@ -171,6 +180,10 @@ namespace RPG
 
         public bool Add_On_Tick(Script script)
         {
+            if (On_Tick.Count == 0)
+            {
+                GameTimer.Add(Tick);
+            }
             if (On_Tick.Contains(script))
             {
                 return false;
@@ -180,17 +193,20 @@ namespace RPG
                 On_Tick.Add(script);
                 return true;
             }
-            
         }
         public bool Remove_On_Tick(Script script)
         {
-            if (On_Tick.Contains(script))
+            if (!On_Tick.Contains(script))
             {
                 return false;
             }
             else
             {
                 On_Tick.Remove(script);
+                if (On_Tick.Count == 0)
+                {
+                    GameTimer.Remove(Tick);
+                }
                 return true;
             }
             
@@ -229,6 +245,15 @@ namespace RPG
         public void Remove_Travel_Mode(MovementMode mode)
         {
             Travel_Modes.Remove(mode);
+        }
+
+        public void Select()
+        {
+            Selected = true;
+        }
+        public void UnSelect()
+        {
+            Selected = false;
         }
 
         public Bitmap Get_Image()
@@ -294,6 +319,24 @@ namespace RPG
         {
             return On_Leave;
         }
+        public string Get_Details()
+        {
+            string text = "";
+            text =
+                "Mod: " + Source.Get_Name() + Environment.NewLine +
+                "Name: " + Name + Environment.NewLine +
+                "Description: " + Description + Environment.NewLine;
+            text += "Tags:" + Environment.NewLine;
+            for (int i = 0; i < Tags.Count; i++)
+            {
+                text += Tags[i].Get_Name() + Environment.NewLine;
+            }
+            if (Entity != null)
+            {
+                text += Entity.Get_Details();
+            }
+            return text;
+        }
 
         public bool Set_Image(Bitmap image)
         {
@@ -343,7 +386,7 @@ namespace RPG
         }
         public bool Set_Neighbour(Direction direction,Tile neighbour)
         {
-            Neighbours.Add(direction, neighbour);
+            Neighbours[direction]= neighbour;
             return true;
         }
         public bool Set_On_Enter(List<Script> on_enter)
@@ -354,6 +397,14 @@ namespace RPG
         public bool Set_On_Tick(List<Script> on_tick)
         {
             On_Tick = on_tick;
+            if (on_tick.Count > 0)
+            {
+                GameTimer.Add(Tick);
+            }
+            else
+            {
+                GameTimer.Remove(Tick);
+            }
             return true;
         }
         public bool Set_On_Leave(List<Script> on_leave)
@@ -369,10 +420,10 @@ namespace RPG
                 case "Image": return Set_Image((Bitmap)value);
                 case "Entity": return Set_Entity((Entity)value);
                 case "Position": return Set_Description((string)value);
-                case "Travel_Modes": return Set_Travel_Modes(MyParser.Convert_Array<MovementMode>(value));
-                case "On_Tick":return Set_On_Tick((List<Script>)value);
-                case "On_Enter": return Set_On_Enter((List<Script>)value);
-                case "On_Leave": return Set_On_Leave((List<Script>)value);
+                case "Travel_Modes": return Set_Travel_Modes(Converter.Convert_Array<MovementMode>(value));
+                case "On_Tick":return Set_On_Tick(Converter.Convert_Array<Script>(value));
+                case "On_Enter": return Set_On_Enter(Converter.Convert_Array<Script>(value));
+                case "On_Leave": return Set_On_Leave(Converter.Convert_Array<Script>(value));
                 default: return base.Set_Variable(name, value);
             }
         }
@@ -403,9 +454,10 @@ namespace RPG
                 case "Remove_On_Tick":return Remove_On_Tick((Script)args[0]);
                 case "Remove_On_Leave":return Remove_On_Leave((Script)args[0]);
                 case "Set_Neighbour":return Set_Neighbour((Direction)args[0], (Tile)args[1]);
+                case "Get_Neighbour":return Get_Neighbour((Direction)args[0]);
                 case "Enter":return Enter((Entity)args[0]);
                 case "Leave":return Leave();
-                case "On_Tick":return Tick();
+                case "On_Tick":Tick(null,null);return null;
                 default: return base.Call_Function(name, args);
             }
         }

@@ -1,0 +1,25 @@
+
+Item{
+	Mod Source=Base:Base;
+	String Name="Juggernaut";
+   	String Description="Makes the wearer able to shrug of most physical attacks";
+   	Array<Tag> Tags={Base:Defense,Base:Heavy_Armour};
+	Image Image = Base:JuggernautImage;
+
+  	Double Rarity=0.0001;
+    	Double Worth=100.0;
+ 	Slot Slot=Base:Body;
+   	Array<Item_Stat> Stats={
+		Item_Stat{
+		Stat Target=Base:Health; 
+		Double Percent=10000.0;
+		Double Flat=200.0;
+		},
+		Item_Stat{
+		Stat Target=Base:Armour; 
+		Double Percent=1000.0; 
+		Double Flat=150.0;
+		}
+	};
+	Array<Skill> Skills={Base:Stand_Your_Ground};
+}

@@ -27,7 +27,7 @@ namespace RPG
                 iter.Execute(args);
             }
         }
-        public void Process_Effect(External_Effect effect)
+        public void Process_Effect(Effect effect)
         {
             object[] args = {Value,effect, Binded };
             foreach (Script iter in On_Effect)

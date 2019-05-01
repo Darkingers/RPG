@@ -6,7 +6,7 @@ Stat_Modifier{
 		Base:Physical,
 		Base:Attack
 		};
-      Modifier Intention=Decrease;
+      Modifier Intention=[Decrease];
       Double Flat=0.0;
       Double Percent=0.0;
 }
@@ -16,9 +16,9 @@ Stat_Modifier{
       String Description="Increases your physical damage ";
       Array<Tag> Tags={
 		Base:Physical,
-		Base:Modifier
+		Base:Defense
 		};
-      Modifier Intention=Increase;
+      Modifier Intention=[Increase];
       Double Flat=0.0;
       Double Percent=0.0;
 }

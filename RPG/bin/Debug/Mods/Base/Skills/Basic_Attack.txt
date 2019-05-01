@@ -1,19 +1,25 @@
-Script{
-	Mod Source=Base:Base;	
-	String Name="Basic_Attack_Script";
-   	String Description="This script implements a basic attack";
-	Array<String> Arguments={"Target","Source"};
-	String Return_Type="void";
-	Script Excuted={
-		Int NewHealth=target.Get("Health")-source.Get("Base:Physical_Damage");
-		Target.Set("Health",NewHealth);
+void Basic_Attack_Script(Entity source,Tile target){
+	Entity temp=target.Get("Entity");
+	if(temp!=null){
+		Effect effect=Effect{
+			Stat Stat=Base:Health;
+			Double Flat=0.0;
+			Double Percent=0.0;
+			Array<Tag> Sender_Tags={Base:Physical,Base:Defense};
+			Array<Tag> Reciever_Tags={Base:Physical,Base:Attack};
+			Number Target_Number=[Current];
+			Intention Intention=[Decrease];
 		};
+		source.Send(effect);
+		temp.Recieve(effect);
+	}
 }
 
 Skill{
    Mod Source=Base:Base;
    String Name="Basic_Attack";
    String Description="A basic attack with the sword ";
+   Image Image=Base:Basic_Attack_Image;
    Array<Tag> Tags={
 		Base:Attack,
 		Base:Physical
@@ -21,12 +27,12 @@ Skill{
   Cost Cost={
   	Cost_Value{
 	 	Stat Target=Base:Mana; 
-		Double Flat=100.0;
+		Double Flat=0.0;
 		Double Percent=0.0;
 		}
 	 };
   Cooldown Cooldown=Cooldown{ 
-		Double Time=15.0; 
+		Double Time=1.0; 
 		Double Time_Left=0.0; 
 	};
   Array<Script> Effects={Base:Basic_Attack_Script};

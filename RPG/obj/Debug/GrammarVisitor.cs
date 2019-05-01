@@ -47,6 +47,13 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitObject([NotNull] GrammarParser.ObjectContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitScript([NotNull] GrammarParser.ScriptContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.block"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -73,6 +80,13 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] GrammarParser.VariableDeclarationContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.whileStatement"/>.
@@ -110,18 +124,25 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitForStatement([NotNull] GrammarParser.ForStatementContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.functionStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionStatement([NotNull] GrammarParser.FunctionStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.globalFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGlobalFunction([NotNull] GrammarParser.GlobalFunctionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.localFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLocalFunction([NotNull] GrammarParser.LocalFunctionContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.varName"/>.
@@ -166,13 +187,6 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitArray([NotNull] GrammarParser.ArrayContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrammarParser.arguments"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArguments([NotNull] GrammarParser.ArgumentsContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.condition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -180,11 +194,32 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCondition([NotNull] GrammarParser.ConditionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.arguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArguments([NotNull] GrammarParser.ArgumentsContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.comparator"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparator([NotNull] GrammarParser.ComparatorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOperator([NotNull] GrammarParser.OperatorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrammarParser.enumerator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnumerator([NotNull] GrammarParser.EnumeratorContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrammarParser.expression"/>.
@@ -199,12 +234,5 @@ public interface IGrammarVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSimpleExpression([NotNull] GrammarParser.SimpleExpressionContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrammarParser.operator"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitOperator([NotNull] GrammarParser.OperatorContext context);
 }
 } // namespace RPG

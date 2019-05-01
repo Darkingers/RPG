@@ -60,11 +60,7 @@ namespace RPG
         {
             switch (name)
             {
-                case "Fly":return MovementMode.Fly;
-                case "Walk":return MovementMode.Walk;
-                case "Phase":return MovementMode.Phase;
-                case "Decrease":return Modifier.Decrease;
-                case "Increase":return Modifier.Increase;
+               
                 default: return Local_Variables[name];
             }
         }

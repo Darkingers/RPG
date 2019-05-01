@@ -59,6 +59,10 @@ namespace RPG
         {
             return false;
         }
+        public virtual bool Try_Trigger(Entity source)
+        {
+            return false;
+        }
 
         public Stat Get_Stat()
         {

@@ -62,6 +62,19 @@ public partial class GrammarBaseListener : IGrammarListener {
 	public virtual void ExitObject([NotNull] GrammarParser.ObjectContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterScript([NotNull] GrammarParser.ScriptContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.script"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitScript([NotNull] GrammarParser.ScriptContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.block"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -112,6 +125,19 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaration([NotNull] GrammarParser.VariableDeclarationContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.whileStatement"/>.
@@ -179,19 +205,6 @@ public partial class GrammarBaseListener : IGrammarListener {
 	public virtual void ExitForStatement([NotNull] GrammarParser.ForStatementContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.assignmentStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAssignmentStatement([NotNull] GrammarParser.AssignmentStatementContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.functionStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -203,6 +216,32 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunctionStatement([NotNull] GrammarParser.FunctionStatementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.globalFunction"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGlobalFunction([NotNull] GrammarParser.GlobalFunctionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.globalFunction"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGlobalFunction([NotNull] GrammarParser.GlobalFunctionContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.localFunction"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLocalFunction([NotNull] GrammarParser.LocalFunctionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.localFunction"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLocalFunction([NotNull] GrammarParser.LocalFunctionContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.varName"/>.
@@ -283,19 +322,6 @@ public partial class GrammarBaseListener : IGrammarListener {
 	public virtual void ExitArray([NotNull] GrammarParser.ArrayContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.arguments"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterArguments([NotNull] GrammarParser.ArgumentsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.arguments"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitArguments([NotNull] GrammarParser.ArgumentsContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.condition"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -309,6 +335,19 @@ public partial class GrammarBaseListener : IGrammarListener {
 	public virtual void ExitCondition([NotNull] GrammarParser.ConditionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.arguments"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArguments([NotNull] GrammarParser.ArgumentsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.arguments"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArguments([NotNull] GrammarParser.ArgumentsContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.comparator"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -320,6 +359,32 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitComparator([NotNull] GrammarParser.ComparatorContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.operator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOperator([NotNull] GrammarParser.OperatorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.operator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOperator([NotNull] GrammarParser.OperatorContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="GrammarParser.enumerator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEnumerator([NotNull] GrammarParser.EnumeratorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="GrammarParser.enumerator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEnumerator([NotNull] GrammarParser.EnumeratorContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="GrammarParser.expression"/>.
@@ -346,19 +411,6 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSimpleExpression([NotNull] GrammarParser.SimpleExpressionContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="GrammarParser.operator"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOperator([NotNull] GrammarParser.OperatorContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GrammarParser.operator"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOperator([NotNull] GrammarParser.OperatorContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

@@ -39,6 +39,24 @@ namespace RPG
                 loaded.Set_Path(mod.FullName);
                 Load_Mod(loaded);
             }
+            Dictionary<Slot,Item> slots = new Dictionary<Slot,Item>();
+            List<object> values = records.Values.ToList();
+            for(int i = 0; i < values.Count; i++)
+            {
+                if (values[i].GetType() == typeof(Slot))
+                {
+                    slots.Add((Slot)values[i],null);
+                }
+
+            }
+            for(int i = 0; i < values.Count; i++)
+            {
+                if (values[i].GetType() == typeof(Player) || values[i].GetType() == typeof(Entity))
+                {
+                    Dictionary<Slot, Item> temp = new Dictionary<Slot, Item>(slots);
+                    ((Entity)records[((Record)values[i]).Get_Identifier()]).Set_Equipment(temp);
+                }
+            }
         }
         
         static public void Load_File(string path)

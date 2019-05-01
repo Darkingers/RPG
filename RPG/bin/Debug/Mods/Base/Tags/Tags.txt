@@ -8,6 +8,30 @@ Tag{
 	String Name="Player";
 }
 Tag{
+	String Name="Sword";
+}
+Tag{
+	String Name="Magic";
+}
+Tag{
+	String Name="Buff";
+}
+Tag{
+	String Name="Undead";
+}
+Tag{
+	String Name="Heavy_Armour";
+}
+Tag{
+	String Name="Light_Armour";
+}
+Tag{
+	String Name="Medium_Armour";
+}
+Tag{
+	String Name="Fire";
+}
+Tag{
 	String Name="Entity";
 }
 Tag{

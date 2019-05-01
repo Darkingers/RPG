@@ -70,7 +70,7 @@ namespace RPG
             switch (name)
             {
                 case "Path": return Set_Path((string)value);
-                case "Load_Order":return Set_Load_Order(MyParser.Convert_Array<string>(value));
+                case "Load_Order":return Set_Load_Order(Converter.Convert_Array<string>(value));
                 default: return base.Set_Variable(name, value);
             }
         }
