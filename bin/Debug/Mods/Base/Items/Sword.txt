@@ -1,0 +1,19 @@
+Item{
+	Mod Source=Base:Base;
+	String Name="Basic_Sword";
+   	String Description="This is a basic sword";
+   	Array<Tag> Tags={Base:Attack,Base:Sword,Base:One_Handed};
+	Image Image = Base:SwordImage;
+
+  	Double Rarity=0.1;
+    	Double Worth=100.0;
+ 	Slot Slot=Base:Right_Hand;
+   	Array<Item_Stat> Stats={
+		Item_Stat{
+		Stat Target=Base:Physical_Damage; 
+		Double Percent=100.0;
+		Double Flat=50.0;
+		}
+	};
+	Array<Skill> Skills={Base:Basic_Attack};
+}

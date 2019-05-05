@@ -1,0 +1,23 @@
+Item{
+	Mod Source=Base:Base;
+	String Name="Basic_Shield";
+   	String Description="This is a basic shield";
+   	Array<Tag> Tags={Base:Defense,Base:Shield,Base:One_Handed};
+	Image Image = Base:ShieldImage;
+
+  	Double Rarity=0.1;
+    	Double Worth=100.0;
+ 	Slot Slot=Base:Left_Hand;
+   	Array<Item_Stat> Stats={
+		Item_Stat{
+		Stat Target=Base:Health; 
+		Double Percent=100.0;
+		Double Flat=50.0;
+		},
+		Item_Stat{
+		Stat Target=Base:Armour; 
+		Double Percent=100.0; 
+		Double Flat=50.0;
+		}
+	};
+}

@@ -1,0 +1,63 @@
+void Lava_Enter_Script(Entity entered){
+	if(entered!=null){
+		Effect effect=Effect{
+			Stat Stat=Base:Health;
+			Double Flat=300.0;
+			Double Percent=0.0;
+			Array<Tag> Sender_Tags={Base:Fire,Base:Defense};
+			Array<Tag> Reciever_Tags={Base:Fire,Base:Attack};
+			Number Target=[Current];
+			Intention Intention=[Decrease];
+		}
+		entered.Recieve(effect);
+	}
+}
+void Lava_Tick_Script(Entity entered){
+	if(entered!=null){
+		Effect effect=Effect{
+			Stat Stat=Base:Health;
+			Double Flat=100.0;
+			Double Percent=0.0;
+			Array<Tag> Sender_Tags={Base:Fire,Base:Defense};
+			Array<Tag> Reciever_Tags={Base:Fire,Base:Attack};
+			Number Target=[Current];
+			Intention Intention=[Decrease];
+		}
+		entered.Recieve(effect);
+	}
+}
+
+Tile{
+    Mod Source=Base:Base;
+    String Name="Lava";
+    String Description="This is lava";
+    Array<Tag> Tags={Base:Flyable};
+    Image Image=Base:Lava_Image;
+    Array<MovementMode> Travel_Modes={[Walk]};
+    Array<Script> On_Enter={Base:Lava_Enter_Script};
+    Array<Script> On_Tick={Base:Lava_Tick_Script};
+}
+Tile{
+    Mod Source=Base:Base;
+    String Name="Grass";
+    String Description="This is grass ";
+    Array<Tag> Tags={Base:Walkable , Base:Flyable , Base:Phaseable};
+    Image Image=Base:Grass_Image;
+    Array<MovementMode> Travel_Modes={[Walk] , [Fly] , [Phase]};
+}
+Tile{
+    Mod Source=Base:Base;
+    String Name="Wall";
+    String Description="This is a wall ";
+    Array<Tag> Tags={Base:Phaseable , Base:Flyable};
+    Image Image=Base:Wall_Image;
+    Array<MovementMode> Travel_Modes={[Fly] , [Phase]};
+}
+Tile{
+    Mod Source=Base:Base;
+    String Name="Water";
+    String Description="This is Water";
+    Array<Tag> Tags={Base:Flyable};
+    Image Image=Base:Water_Image;
+    Array<MovementMode> Travel_Modes={[Fly]};
+}

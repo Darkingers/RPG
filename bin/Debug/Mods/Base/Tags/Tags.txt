@@ -1,0 +1,72 @@
+Tag{
+        String Name="Flyable";
+}
+Tag{
+	String Name="Walkable";
+}
+Tag{
+	String Name="Player";
+}
+Tag{
+	String Name="Sword";
+}
+Tag{
+	String Name="Magic";
+}
+Tag{
+	String Name="Buff";
+}
+Tag{
+	String Name="Undead";
+}
+Tag{
+	String Name="Heavy_Armour";
+}
+Tag{
+	String Name="Light_Armour";
+}
+Tag{
+	String Name="Medium_Armour";
+}
+Tag{
+	String Name="Fire";
+}
+Tag{
+	String Name="Entity";
+}
+Tag{
+	String Name="Phaseable";
+}
+Tag{
+	String Name="Physical";
+}
+Tag{
+	String Name="Attack";
+}
+Tag{
+	String Name="Fatal";
+}
+Tag{
+	String Name="Resource";
+}
+Tag{
+	String Name="Regeneration";
+}
+Tag{
+	String Name="Modifier";
+}
+Tag{
+	String Name="Map";
+}
+Tag{
+	String Name="Large";
+}
+ Tag{
+	String Name="Shield";
+}
+ Tag{
+	String Name="One_Handed";
+}
+ Tag{
+	String Name="Defense";
+}
