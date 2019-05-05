@@ -1,0 +1,32 @@
+void Swap_Script(Entity source,Tile target){
+	Entity targeted=target.Get("Entity");
+	if(targeted!=null){
+		Tile sourcetile=source.Get("Tile");
+		sourcetile.Leave();
+		target.Leave();
+		target.Enter(source);
+		sourcetile.Enter(targeted);
+	}
+}
+
+Skill{
+   Mod Source=Base:Base;
+   String Name="Swap";
+   String Description="Swaps the user and selected target";
+   Image Image=Base:Swap_Image;
+   Array<Tag> Tags={
+		Base:Magic,
+		};
+  Cost Cost={
+  	Cost_Value{
+	 	Stat Target=Base:Mana; 
+		Double Flat=0.0;
+		Double Percent=20.0;
+		}
+	 };
+  Cooldown Cooldown=Cooldown{ 
+		Double Time=1.0; 
+		Double Time_Left=0.0; 
+	};
+  Array<Script> Effects={Base:Swap_Script};
+}

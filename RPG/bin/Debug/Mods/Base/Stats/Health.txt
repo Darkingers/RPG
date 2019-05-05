@@ -1,0 +1,32 @@
+void KillScript(Entity target){
+	target.Kill();
+	string temp=" died";
+	Message(target.Get("Name")+" died");
+}
+
+Stat_Resource{
+	Mod Source=Base:Base;
+	String Name="Health";
+	String Description=" If your health runs out,you die";
+	Array<Tag> Tags={Base:Resource ,Base:Fatal};
+	Double Flat=100.0;
+      	Double Percent=0.0;
+	Double Current=100.0;
+	Array<Trigger> Triggers={
+		Trigger{
+			Double Threshold=0.0;
+			Relation Relation=[Less];
+			Numeral Numeral=[Flat];
+			Array<Script> Scripts={Base:KillScript};
+		}
+	};
+}
+Stat_Regeneration{
+      Mod Source=Base:Base;
+      String Name= "Health_Regeneration";
+      String Description= "Regenerates your health";
+      Array<Tag> Tags={Base:Regeneration};
+      Stat_Resource Target=Base:Health;
+      Double Flat=0.0;
+      Double Percent=1.0;
+}

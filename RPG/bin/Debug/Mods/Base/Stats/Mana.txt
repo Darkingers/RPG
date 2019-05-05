@@ -1,0 +1,20 @@
+Stat_Resource{
+      Mod Source=Base:Base;
+      String Name="Mana";
+      String Description="Mana allows you to cast spells";
+      Array<Tag> Tags={Base:Resource};
+      Double Flat=100.0;
+      Double Percent=0.0;
+      Double Currenct=100.0;
+}
+Stat_Regeneration{
+      Mod Source=Base:Base;
+      String Name="Mana_Regeneration";
+      String Description="Regenerates your mana";
+      Array<Tag> Tags={ 
+		Base:Regeneration
+		};
+      Stat_Resource Target=Base:Mana;
+      Double Flat=0.0;
+      Double Percent=1.0;
+}

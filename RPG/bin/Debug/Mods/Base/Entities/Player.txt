@@ -1,0 +1,55 @@
+Player{
+	Mod Source = Base:Base;
+	String Name="TestPlayer";
+	String Description="Player champ";
+	Array<Tag> Tags={Base:Player,Base:Entity};
+	Image Image=Base:Player_Image;
+	Array<Item> Inventory={Base:Basic_Shield,Base:Basic_Sword,Base:Juggernaut};
+	Array<Skill> Skills={Base:Teleportation,Base:Swap};
+    
+	Int Sight = 4;
+	Cooldown Speed = Cooldown{
+		Double Time= 0.1;
+		Double Time_Left=0.0;
+		};
+
+	Array<Stat_Resource> Resources={
+		Stat_Resource{
+		this=Base:Health;
+      		Double Flat=500.0;
+		Double Percent=100.0;
+  		Double Current=100.0;
+		},
+		Stat_Resource{
+		this=Base:Mana; 
+		Double Flat=500.0;
+		Double Percent=100.0;
+ 		Double Current=1000.0;
+		}
+	};
+	Array<Stat_Modifier> Modifiers={
+		Stat_Modifier{
+		this=Base:Physical_Damage;
+		Double Flat=50.0; 
+		Double Percent=100.0;
+		},
+		Stat_Modifier{
+		this=Base:Armour;
+		Double Flat=0.0;
+		Double Percent=50.0;
+		}
+    	};
+    	Array<Stat_Regeneration> Regenerators={
+		Stat_Regeneration{
+		this=Base:Health_Regeneration; 
+		Double Flat=10.0;
+		Double Percent=5.0;
+		}
+		,
+		Stat_Regeneration{
+		this=Base:Mana_Regeneration; 
+		Double Flat=100.0;
+		Double Percent=20.0;
+		}
+	};
+}

@@ -1,0 +1,56 @@
+Entity{
+	Mod Source = Base:Base;
+	String Name="Skeleton";
+	String Description="Undead creature";
+	Array<Tag> Tags={Base:Undead,Base:Entity};
+	Image Image=Base:Skeleton_Image;
+	Array<Item> Inventory={Base:Basic_Shield};
+	Dictionary<Slot,Item> Equipment={Base:Left_Hand@Base:Basic_Shield};
+	Array<Skill> Skills={Base:Basic_Attack};
+    
+	Int Sight = 2;
+	Cooldown Speed = Cooldown{
+		Double Time= 0.3;
+		Double Time_Left=0.0;
+		};
+
+	Array<Stat_Resource> Resources={
+		Stat_Resource{
+		this=Base:Health;
+      		Double Flat=100.0;
+		Double Percent=100.0;
+  		Double Current=200.0;
+		},
+		Stat_Resource{
+		this=Base:Mana; 
+		Double Flat=20.0;
+		Double Percent=100.0;
+ 		Double Current=40.0;
+		}
+	};
+	Array<Stat_Modifier> Modifiers={
+		Stat_Modifier{
+		this=Base:Physical_Damage;
+		Double Flat=10.0; 
+		Double Percent=50.0;
+		},
+		Stat_Modifier{
+		this=Base:Armour;
+		Double Flat=10.0;
+		Double Percent=0.0;
+		}
+    	};
+    	Array<Stat_Regeneration> Regenerators={
+		Stat_Regeneration{
+		this=Base:Health_Regeneration; 
+		Double Flat=0.0;
+		Double Percent=1.0;
+		}
+		,
+		Stat_Regeneration{
+		this=Base:Mana_Regeneration; 
+		Double Flat=0.0;
+		Double Percent=1.0;
+		}
+	};
+}
